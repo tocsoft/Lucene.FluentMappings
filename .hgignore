@@ -1,0 +1,7 @@
+glob:*_ReSharper.*
+glob:*/bin/*
+glob:*/obj/*
+glob:*.user
+glob:*.suo
+glob:log*.txt*
+glob:packages/*

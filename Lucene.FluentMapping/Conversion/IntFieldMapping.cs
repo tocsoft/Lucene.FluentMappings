@@ -1,0 +1,81 @@
+using System;
+using System.Linq.Expressions;
+using Lucene.FluentMapping.Configuration;
+using Lucene.Net.Documents;
+
+namespace Lucene.FluentMapping.Conversion
+{
+    public static class IntFieldMapping
+    {
+        public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, int>> property, bool indexed = false)
+        {
+            return @this.Add(new IntFieldMapping<T>(property, indexed));
+        }
+
+        public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, int?>> property, bool indexed = false)
+        {
+            return @this.Add(new IntFieldMapping<T>(property, indexed));
+        }
+    }
+
+    public class IntFieldMapping<T> : IFieldMap<T>
+    {
+        // TODO - don't store null value!!
+
+        private const int IntegerNullValue = int.MinValue;
+
+        private readonly Func<T, int?> _getValue;
+        private readonly Action<T, int?> _setValue;
+        private readonly string _name;
+        private readonly bool _index;
+
+        public IntFieldMapping(Expression<Func<T, int>> property, bool index = false)
+        {
+            _getValue = ReflectionHelper.GetGetter(property).Bind();
+            _setValue= ReflectionHelper.GetSetter(property).Bind();
+            _name = ReflectionHelper.GetPropertyName(property);
+            _index = index;
+        }
+        
+        public IntFieldMapping(Expression<Func<T, int?>> property, bool index = false)
+        {
+            _getValue = ReflectionHelper.GetGetter(property);
+            _setValue = ReflectionHelper.GetSetter(property);
+            _name = ReflectionHelper.GetPropertyName(property);
+            _index = index;
+        }
+
+        public IFieldable GetField(T instance)
+        {
+            var value = _getValue(instance);
+
+            var field = new NumericField(_name, Field.Store.YES, _index);
+
+            field.SetIntValue(value.HasValue ? value.Value : IntegerNullValue);
+
+            return field;
+        }
+
+        public Setter<T> ValueFrom(Document document)
+        {
+            var field = document.Get(_name);
+
+            var value = Convert(field);
+
+            return new Setter<T>(x => _setValue(x, value));
+        }
+
+        private static int? Convert(string s)
+        {
+            if (s == null)
+                return null;
+
+            var value = int.Parse(s);
+
+            if (value == IntegerNullValue)
+                return null;
+
+            return value;
+        }
+    }
+}

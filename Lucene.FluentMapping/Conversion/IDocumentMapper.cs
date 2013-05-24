@@ -1,0 +1,14 @@
+using Lucene.Net.Documents;
+
+namespace Lucene.FluentMapping.Conversion
+{
+    public interface IDocumentMapper<T>
+    {
+        // TODO consider method which sets fields on an existing Document
+        // lucene docs say (said?) re-using document & field instance improves performance
+
+        Document Convert(T source);
+
+        T Convert(Document doc);
+    }
+}
