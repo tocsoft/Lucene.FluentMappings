@@ -13,12 +13,10 @@ namespace Lucene.FluentMapping.Test
         [SetUp]
         public void SetUp()
         {
-            _mapper = DocumentMapper.For<Advert>();
+            _mapper = DocumentMapper.For(() => new Advert(0, string.Empty));
 
-            _advert = new Advert
+            _advert = new Advert(123, "bookcases")
                 {
-                    CategoryId = 123,
-                    CategoryName = "bookcases",
                     Colour = "natural oak",
                     Depth = 200,
                     Height = 2000,
@@ -35,7 +33,7 @@ namespace Lucene.FluentMapping.Test
         [Test]
         public void CanCovertToDocumentFromDefaultInstance()
         {
-            var document = _mapper.Convert(new Advert());
+            var document = _mapper.Convert(new Advert(0, null));
 
             Assert.That(document, Is.Not.Null);
         }

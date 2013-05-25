@@ -15,10 +15,16 @@ namespace Lucene.FluentMapping.Test
         public int? Width { get; set; }
         public int? Depth { get; set; }
         
-        public string CategoryName { get; set; }
-        public int CategoryId { get; set; }
+        public string CategoryName { get; private set; }
+        public int CategoryId { get; private set; }
 
         public Uri Uri { get; set; }
         public Uri PrimaryImageUri { get; set; }
+
+        public Advert(int categoryId, string categoryName)
+        {
+            CategoryId = categoryId;
+            CategoryName = categoryName;
+        }
     }
 }

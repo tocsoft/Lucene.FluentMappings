@@ -60,7 +60,7 @@ namespace Lucene.FluentMapping.Configuration
 
             var setterCall = Expression.Call(
                 instance,
-                propertyInfo.GetSetMethod(),
+                propertyInfo.GetSetMethod(true),
                 argument);
 
             return (Action<T, TProperty>)Expression.Lambda(setterCall, instance, argument)
