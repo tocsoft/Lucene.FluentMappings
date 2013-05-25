@@ -52,8 +52,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Advert.cs" />
-    <Compile Include="ListingResultMappingConfiguration.cs" />
+    <Compile Include="AdvertMappingConfiguration.cs" />
+    <Compile Include="Compare.cs" />
+    <Compile Include="DocumentMapperFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyAndValue.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Lucene.FluentMapping\Lucene.FluentMapping.csproj">
