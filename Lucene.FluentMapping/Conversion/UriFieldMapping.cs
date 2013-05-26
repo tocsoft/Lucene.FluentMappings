@@ -21,7 +21,7 @@ namespace Lucene.FluentMapping.Conversion
 
         protected override Uri FromString(string value)
         {
-            if (value == null)
+            if (string.IsNullOrEmpty(value))
                 return null;
 
             return new Uri(value);

@@ -1,30 +1,29 @@
 using System.Collections.Generic;
+using System.Linq;
 using Lucene.Net.Documents;
 
 namespace Lucene.FluentMapping.Conversion
 {
     public class DocumentWriter<T>
     {
-        private readonly IEnumerable<IFieldWriter<T>> _mappings;
+        private readonly IList<IField<T>> _fields;
 
-        public DocumentWriter(IEnumerable<IFieldWriter<T>> mappings)
+        public Document Document { get; private set; }
+
+        public DocumentWriter(IEnumerable<IFieldWriter<T>> mappings, Document document = null)
         {
-            _mappings = mappings;
+            _fields = mappings.Select(x => x.CreateField()).ToList();
+            
+            Document = document ?? new Document();
+            
+            foreach (var field in _fields)
+                Document.Add(field.Field);
         }
 
-        public Document Write(T source)
+        public void UpdateFrom(T source)
         {
-            var document = new Document();
-
-            foreach (var mapping in _mappings)
-            {
-                var field = mapping.GetField(source);
-
-                if (field != null)
-                    document.Add(field);
-            }
-
-            return document;
+            foreach (var field in _fields)
+                field.SetValueFrom(source);
         }
     }
 }

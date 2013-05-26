@@ -20,17 +20,17 @@ namespace Lucene.FluentMapping.Test
         [Test]
         public void CanCovertToDocumentFromDefaultInstance()
         {
-            var document = _writer.Write(new Advert(0, null));
+            _writer.UpdateFrom(new Advert(0, null));
 
-            Assert.That(document, Is.Not.Null);
+            Assert.That(_writer.Document, Is.Not.Null);
         }
 
         [Test]
         public void WhenConvertingFromInstance_DocumentHasFieldsForEachProperty()
         {
-            var document = _writer.Write(Example.Advert());
+            _writer.UpdateFrom(Example.Advert());
 
-            Assert.That(document, Is.Not.Null
+            Assert.That(_writer.Document, Is.Not.Null
                                     .And.Property("fields_ForNUnit").Count.EqualTo(12));
         }
     }

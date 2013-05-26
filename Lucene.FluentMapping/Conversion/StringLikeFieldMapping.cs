@@ -5,6 +5,31 @@ using Lucene.Net.Documents;
 
 namespace Lucene.FluentMapping.Conversion
 {
+    public class StringField<T> : IField<T>
+    {
+        private readonly Func<T, string> _getValue;
+
+        private readonly Field _field;
+
+        public IFieldable Field
+        {
+            get { return _field; }
+        }
+
+        public StringField(Func<T, string> getValue, Field field)
+        {
+            _getValue = getValue;
+            _field = field;
+        }
+
+        public void SetValueFrom(T instance)
+        {
+            var value = _getValue(instance);
+
+            _field.SetValue(value);
+        }
+    }
+
     public abstract class StringLikeFieldMapping<T, TProperty> : IFieldMap<T>
         where TProperty : class
     {
@@ -31,14 +56,11 @@ namespace Lucene.FluentMapping.Conversion
             return value.ToString();
         }
 
-        public IFieldable GetField(T instance)
+        public IField<T> CreateField()
         {
-            var value = GetValue(instance);
+            var field = new Field(_name, string.Empty, Field.Store.YES, _index ?? Field.Index.NOT_ANALYZED);
 
-            if (value == null)
-                return null;
-
-            return new Field(_name, value, Field.Store.YES, _index ?? Field.Index.NOT_ANALYZED);
+            return new StringField<T>(GetValue, field);
         }
 
         public Setter<T> ValueFrom(Document document)

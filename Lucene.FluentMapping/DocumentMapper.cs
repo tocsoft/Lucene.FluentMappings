@@ -42,12 +42,12 @@ namespace Lucene.FluentMapping
         {
             var writer = GetDocumentWriter<TMapped>();
 
-            // TODO can this be safely paralellised when IFieldMap becomes stateful?!
+            foreach (var instance in instances)
+            {
+                writer.UpdateFrom(instance);
 
-            instances
-                .Select(writer.Write)
-                .ToList()
-                .ForEach(documentAction);
+                documentAction(writer.Document);
+            }
         }
 
         private static IList<TResult> Convert<TResult>(IEnumerable<Document> documents, Func<TResult> constructor)

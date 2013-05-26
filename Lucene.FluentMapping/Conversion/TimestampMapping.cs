@@ -1,4 +1,3 @@
-using System;
 using Lucene.Net.Documents;
 
 namespace Lucene.FluentMapping.Conversion
@@ -16,11 +15,11 @@ namespace Lucene.FluentMapping.Conversion
             _datePrecision = datePrecision ??  DateTools.Resolution.MINUTE;
         }
         
-        public IFieldable GetField(T instance)
+        public IField<T> CreateField()
         {
-            var stringValue = DateTools.DateToString(DateTime.Now, _datePrecision);
+            var field = new Field(_name, string.Empty, Field.Store.YES, Field.Index.ANALYZED);
 
-            return new Field(_name, stringValue ?? string.Empty, Field.Store.YES, Field.Index.ANALYZED);
+            return new TimestampField<T>(field, _datePrecision);
         }
 
         public Setter<T> ValueFrom(Document document)

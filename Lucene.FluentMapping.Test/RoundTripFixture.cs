@@ -23,14 +23,14 @@ namespace Lucene.FluentMapping.Test
             _advert = Example.Advert();
         }
 
-        
+
         [Test]
         public void CanRoundTripConvert()
         {
-            var document = _writer.Write(_advert);
+            _writer.UpdateFrom(_advert);
 
-            var roundTripped = _reader.Read(document);
-            
+            var roundTripped = _reader.Read(_writer.Document);
+
             var differences = Compare.Properties(_advert, roundTripped);
 
             Assert.That(differences, Is.Empty);

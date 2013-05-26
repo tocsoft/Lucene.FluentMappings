@@ -49,11 +49,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\AppDomainExtensions.cs" />
+    <Compile Include="Conversion\IField.cs" />
     <Compile Include="Conversion\IFieldReader.cs" />
     <Compile Include="Conversion\IFieldWriter.cs" />
     <Compile Include="Conversion\IFieldMap.cs" />
     <Compile Include="Configuration\IMappingConfiguration.cs" />
+    <Compile Include="Conversion\IntegerField.cs" />
     <Compile Include="Conversion\IntFieldMapping.cs" />
+    <Compile Include="Conversion\LongField.cs" />
+    <Compile Include="Conversion\TimestampField.cs" />
     <Compile Include="DocumentMapper.cs" />
     <Compile Include="Conversion\LongFieldMapping.cs" />
     <Compile Include="Configuration\MappingBuilder.cs" />

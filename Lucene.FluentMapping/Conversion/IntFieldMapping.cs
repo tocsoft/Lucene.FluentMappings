@@ -45,15 +45,11 @@ namespace Lucene.FluentMapping.Conversion
             _index = index;
         }
 
-        public IFieldable GetField(T instance)
+        public IField<T> CreateField()
         {
-            var value = _getValue(instance);
-
             var field = new NumericField(_name, Field.Store.YES, _index);
 
-            field.SetIntValue(value.HasValue ? value.Value : IntegerNullValue);
-
-            return field;
+            return new IntegerField<T>(_getValue, field);
         }
 
         public Setter<T> ValueFrom(Document document)
@@ -65,9 +61,9 @@ namespace Lucene.FluentMapping.Conversion
             return new Setter<T>(x => _setValue(x, value));
         }
 
-        private int? Convert(NumericField field)
+        private static int? Convert(NumericField field)
         {
-            if (field == null)
+            if (field == null || field.NumericValue == null)
                 return null;
 
             return Value((int) field.NumericValue);
