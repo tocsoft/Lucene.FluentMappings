@@ -1,6 +1,6 @@
 using Lucene.Net.Documents;
 
-namespace Lucene.FluentMapping.Conversion
+namespace Lucene.FluentMapping
 {
     public interface IDocumentMapper<T>
     {

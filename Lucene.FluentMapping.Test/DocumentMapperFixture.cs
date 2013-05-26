@@ -1,4 +1,4 @@
-using System;
+using Lucene.FluentMappings.Demo;
 using Lucene.Net.Documents;
 using NUnit.Framework;
 
@@ -7,7 +7,7 @@ namespace Lucene.FluentMapping.Test
     [TestFixture]
     public class DocumentMapperFixture
     {
-        private DocumentMapper<Advert> _mapper;
+        private IDocumentMapper<Advert> _mapper;
         private Advert _advert;
 
         [SetUp]
@@ -15,19 +15,7 @@ namespace Lucene.FluentMapping.Test
         {
             _mapper = DocumentMapper.For(() => new Advert(0, string.Empty));
 
-            _advert = new Advert(123, "bookcases")
-                {
-                    Colour = "natural oak",
-                    Depth = 200,
-                    Height = 2000,
-                    Width = 600,
-                    Description = "a very nice bookcase",
-                    Title = "oak bookcase",
-                    Id = 999,
-                    Price = 400,
-                    PrimaryImageUri = new Uri("http://www.example.com/foo"),
-                    Uri = new Uri("http://www.example.com/bar")
-                };
+            _advert = Example.Advert();
         }
 
         [Test]

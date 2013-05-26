@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Lucene.FluentMapping.Configuration;
 using Lucene.FluentMapping.Conversion;
 
-namespace Lucene.FluentMapping.Test
+namespace Lucene.FluentMappings.Demo
 {
     public class AdvertMappingConfiguration : IMappingConfiguration<Advert>
     {

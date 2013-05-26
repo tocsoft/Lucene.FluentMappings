@@ -1,10 +1,9 @@
 using System;
 using System.Linq.Expressions;
 using Lucene.FluentMapping.Configuration;
-using Lucene.FluentMapping.Conversion;
 using Lucene.Net.Documents;
 
-namespace Lucene.FluentMapping
+namespace Lucene.FluentMapping.Conversion
 {
     public static class UriFieldMapping
     {

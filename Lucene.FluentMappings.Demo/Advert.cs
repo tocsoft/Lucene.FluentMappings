@@ -1,6 +1,6 @@
 using System;
 
-namespace Lucene.FluentMapping.Test
+namespace Lucene.FluentMappings.Demo
 {
     public class Advert
     {
@@ -26,5 +26,8 @@ namespace Lucene.FluentMapping.Test
             CategoryId = categoryId;
             CategoryName = categoryName;
         }
+
+        public Advert()
+        { }
     }
 }
