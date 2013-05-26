@@ -64,22 +64,25 @@ namespace Lucene.FluentMapping.Conversion
 
         private long? GetValue(Document document)
         {
-            var value = document.Get(_name);
+            var field = document.GetFieldable(_name);
 
-            return Convert(value);
+            return Convert(field as NumericField);
         }
 
-        private static long? Convert(string s)
+        private long? Convert(NumericField numericField)
         {
-            if (s == null)
+            if (numericField == null)
                 return null;
 
-            var value = long.Parse(s);
+            return Value((long) numericField.NumericValue);
+        }
 
-            if (value == NullValue)
+        private long? Value(long numericValue)
+        {
+            if (numericValue == NullValue)
                 return null;
 
-            return value;
+            return numericValue;
         }
     }
 }

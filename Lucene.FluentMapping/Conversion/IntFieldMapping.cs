@@ -58,19 +58,24 @@ namespace Lucene.FluentMapping.Conversion
 
         public Setter<T> ValueFrom(Document document)
         {
-            var field = document.Get(_name);
+            var field = document.GetFieldable(_name);
 
-            var value = Convert(field);
+            var value = Convert(field as NumericField);
 
             return new Setter<T>(x => _setValue(x, value));
         }
 
-        private static int? Convert(string s)
+        private int? Convert(NumericField field)
         {
-            if (s == null)
+            if (field == null)
                 return null;
 
-            var value = int.Parse(s);
+            return Value((int) field.NumericValue);
+        }
+
+        private static int? Value(int numericValue)
+        {
+            var value = numericValue;
 
             if (value == IntegerNullValue)
                 return null;
