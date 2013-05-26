@@ -46,7 +46,7 @@ namespace Lucene.FluentMapping
 
         public static IDocumentMapper<TResult> For<TResult>(Func<TResult> constructor)
         {
-            var mappingSource = _specifiedMappingSource ?? StackHelper.GetCallingAssembly();
+            var mappingSource = _specifiedMappingSource ?? typeof (TResult).Assembly;
 
             var mappings = MappingFactory.GetMappings<TResult>(mappingSource).ToList();
 
