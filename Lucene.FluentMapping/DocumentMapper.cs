@@ -30,12 +30,12 @@ namespace Lucene.FluentMapping
         public static IList<TResult> ToList<TResult>(this IEnumerable<Document> documents)
             where TResult : new()
         {
-            return Convert(documents, For<TResult>());
+            return ToList(documents, () => new TResult());
         }
 
         public static IList<TResult> ToList<TResult>(this IEnumerable<Document> documents, Func<TResult> constructor)
         {
-            return Convert(documents, For(constructor));
+            return Convert(documents, constructor);
         }
 
         public static IDocumentMapper<TResult> For<TResult>()
@@ -46,24 +46,42 @@ namespace Lucene.FluentMapping
 
         public static IDocumentMapper<TResult> For<TResult>(Func<TResult> constructor)
         {
-            var mappingSource = _specifiedMappingSource ?? typeof (TResult).Assembly;
-
-            var mappings = MappingFactory.GetMappings<TResult>(mappingSource);
+            var mappings = GetMappings<TResult>();
 
             return new DocumentMapper<TResult>(mappings, constructor);
         }
 
-        public static void Stream<TMapped>(this IEnumerable<TMapped> instances, Action<Document> documentAction)
+        public static void ToDocuments<TMapped>(this IEnumerable<TMapped> instances, Action<Document> documentAction)
         {
-            // TODO re-use same document + fields
+            var mappings = GetMappings<TMapped>();
+
+            var writer = new DocumentWriter<TMapped>(mappings);
+
+            // TODO can this be safely paralellised when IFieldMap becomes stateful?!
+
+            instances
+                .Select(writer.Write)
+                .ToList()
+                .ForEach(documentAction);
         }
 
-        private static IList<TResult> Convert<TResult>(IEnumerable<Document> documents, IDocumentMapper<TResult> mapper) 
+        private static IList<TResult> Convert<TResult>(IEnumerable<Document> documents, Func<TResult> constructor)
         {
+            var mappings = GetMappings<TResult>();
+
+            var reader = new DocumentReader<TResult>(constructor, mappings);
+
             return documents
                 .AsParallel()
-                .Select(mapper.Convert)
+                .Select(reader.Read)
                 .ToList();
+        }
+
+        private static IEnumerable<IFieldMap<TResult>> GetMappings<TResult>()
+        {
+            var mappingSource = _specifiedMappingSource ?? typeof (TResult).Assembly;
+
+            return MappingFactory.GetMappings<TResult>(mappingSource);
         }
     }
 
