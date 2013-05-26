@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Lucene.FluentMapping;
@@ -13,13 +14,18 @@ namespace Lucene.FluentMappings.Demo
 
         static void Main(string[] args)
         {
-            var iterations = 100000;
+            var iterations = 5000000;
 
             _adverts = Example.Adverts(iterations);
             _documents = Example.Documents(iterations);
-            
-            ReadDocuments();
+
+            Console.WriteLine("Starting");
+
+            //ReadDocuments();
             WriteDocuments();
+            WriteDocumentsParallel();
+
+            Console.WriteLine("Finished");
 
             Console.ReadLine();
         }
@@ -42,9 +48,18 @@ namespace Lucene.FluentMappings.Demo
 
             var elapsed = Time(() => _adverts.ToDocuments(documents.Add));
 
-            Console.WriteLine("created {0} documents in {1}", documents.Count, elapsed);
+            Console.WriteLine("wrote to {0} documents in {1}", documents.Count, elapsed);
         }
-        
+
+        private static void WriteDocumentsParallel()
+        {
+            var documents = new ConcurrentBag<Document>();
+
+            var elapsed = Time(() => _adverts.ToDocumentsParallelEx(documents.Add));
+
+            Console.WriteLine("wrote to {0} documents in {1} (p)", documents.Count, elapsed);
+        }
+
         private static TimeSpan Time(Action action)
         {
             var stopwatch = Stopwatch.StartNew();

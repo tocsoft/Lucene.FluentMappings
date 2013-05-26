@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Lucene.FluentMapping.Configuration;
 using Lucene.FluentMapping.Conversion;
 using Lucene.Net.Documents;
@@ -36,6 +37,16 @@ namespace Lucene.FluentMapping
         public static IList<TResult> ToList<TResult>(this IEnumerable<Document> documents, Func<TResult> constructor)
         {
             return Convert(documents, constructor);
+        }
+
+        public static void ToDocumentsParallelEx<TMapped>(this IEnumerable<TMapped> instances, Action<Document> documentAction)
+        {
+            Parallel.ForEach(instances, GetDocumentWriter<TMapped>, (instance, _, writer) =>
+                {
+                    writer.UpdateFrom(instance);
+                    documentAction(writer.Document);
+                    return writer;
+                }, _ => { });
         }
 
         public static void ToDocuments<TMapped>(this IEnumerable<TMapped> instances, Action<Document> documentAction)
