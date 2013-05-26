@@ -9,7 +9,7 @@ namespace Lucene.FluentMapping.Configuration
 {
     public static class MappingFactory
     {
-        private static readonly ConcurrentDictionary<Type, object> _mappingConfigurations = new ConcurrentDictionary<Type, object>();
+        private static readonly ConcurrentDictionary<Type, object> _mappings = new ConcurrentDictionary<Type, object>();
 
         public static IEnumerable<IFieldMap<T>> GetMappings<T>(Assembly sourceAssembly)
         {
@@ -18,19 +18,21 @@ namespace Lucene.FluentMapping.Configuration
 
         public static IEnumerable<IFieldMap<T>> GetMappings<T>(Assembly[] sourceAssemblies)
         {
-            return GetMappingConfiguration<T>(sourceAssemblies).BuildMappings();
+            return (IEnumerable<IFieldMap<T>>) _mappings.GetOrAdd(typeof (T), _ => BuildMappings<T>( sourceAssemblies));
         }
 
-        private static IMappingConfiguration<T> GetMappingConfiguration<T>(Assembly[] sourceAssemblies)
+        private static object BuildMappings<T>(Assembly[] sourceAssemblies)
         {
-            return (IMappingConfiguration<T>)_mappingConfigurations.GetOrAdd(typeof (T), t => BuildMappingConfiguration(t, sourceAssemblies));
+            var mappingConfiguration = BuildMappingConfiguration<T>(sourceAssemblies);
+
+            return mappingConfiguration.BuildMappings();
         }
 
-        private static object BuildMappingConfiguration(Type mappedType, Assembly[] sourceAssemblies)
+        private static IMappingConfiguration<T> BuildMappingConfiguration<T>(Assembly[] sourceAssemblies)
         {
-            var configurationType = FindMappingConfigurationType(mappedType, sourceAssemblies);
+            var configurationType = FindMappingConfigurationType(typeof(T), sourceAssemblies);
 
-            return Activator.CreateInstance(configurationType);
+            return Activator.CreateInstance(configurationType) as IMappingConfiguration<T>;
         }
 
         private static Type FindMappingConfigurationType(Type mappedType, Assembly[] sourceAssemblies)

@@ -48,7 +48,7 @@ namespace Lucene.FluentMapping
         {
             var mappingSource = _specifiedMappingSource ?? typeof (TResult).Assembly;
 
-            var mappings = MappingFactory.GetMappings<TResult>(mappingSource).ToList();
+            var mappings = MappingFactory.GetMappings<TResult>(mappingSource);
 
             return new DocumentMapper<TResult>(mappings, constructor);
         }
