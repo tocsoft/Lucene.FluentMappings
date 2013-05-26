@@ -7,9 +7,9 @@ namespace Lucene.FluentMapping.Conversion
     public class DocumentReader<T>
     {
         private readonly Func<T> _create;
-        private readonly IEnumerable<IFieldMap<T>> _mappings;
+        private readonly IEnumerable<IFieldReader<T>> _mappings;
 
-        public DocumentReader(Func<T> create, IEnumerable<IFieldMap<T>> mappings)
+        public DocumentReader(Func<T> create, IEnumerable<IFieldReader<T>> mappings)
         {
             _create = create;
             _mappings = mappings;

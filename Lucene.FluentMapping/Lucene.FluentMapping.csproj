@@ -49,6 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\AppDomainExtensions.cs" />
+    <Compile Include="Conversion\IFieldReader.cs" />
+    <Compile Include="Conversion\IFieldWriter.cs" />
     <Compile Include="IDocumentMapper.cs" />
     <Compile Include="Conversion\IFieldMap.cs" />
     <Compile Include="Configuration\IMappingConfiguration.cs" />

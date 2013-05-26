@@ -5,9 +5,9 @@ namespace Lucene.FluentMapping.Conversion
 {
     public class DocumentWriter<T>
     {
-        private readonly IEnumerable<IFieldMap<T>> _mappings;
+        private readonly IEnumerable<IFieldWriter<T>> _mappings;
 
-        public DocumentWriter(IEnumerable<IFieldMap<T>> mappings)
+        public DocumentWriter(IEnumerable<IFieldWriter<T>> mappings)
         {
             _mappings = mappings;
         }
