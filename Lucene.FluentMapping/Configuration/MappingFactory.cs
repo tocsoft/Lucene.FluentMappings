@@ -11,9 +11,9 @@ namespace Lucene.FluentMapping.Configuration
     {
         private static readonly ConcurrentDictionary<Type, object> _mappings = new ConcurrentDictionary<Type, object>();
 
-        public static IEnumerable<IFieldMap<T>> GetMappings<T>(Assembly sourceAssembly)
+        public static IEnumerable<IFieldMap<T>> GetMappings<T>(Assembly sourceAssembly = null)
         {
-            return GetMappings<T>(new[] {sourceAssembly});
+            return GetMappings<T>(new[] {sourceAssembly ?? typeof (T).Assembly});
         }
 
         public static IEnumerable<IFieldMap<T>> GetMappings<T>(Assembly[] sourceAssemblies)

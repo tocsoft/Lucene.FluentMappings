@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using Lucene.FluentMappings.Demo;
+using Lucene.Net.Documents;
 using NUnit.Framework;
 
 namespace Lucene.FluentMapping.Test
@@ -10,8 +10,7 @@ namespace Lucene.FluentMapping.Test
     [TestFixture]
     public class PerformanceFixture
     {
-        private IDocumentMapper<Advert> _mapper;
-        private Advert _advert;
+        private Document _document;
 
         public IEnumerable<int> TestCases 
         {
@@ -20,7 +19,7 @@ namespace Lucene.FluentMapping.Test
                 yield return 100;
                 yield return 1000;
                 yield return 10000;
-                yield return 100000;
+                //yield return 100000;
                 //yield return 1000000;
                 //yield return 10000000;
             }
@@ -29,48 +28,29 @@ namespace Lucene.FluentMapping.Test
         [SetUp]
         public void SetUp()
         {
-            _mapper = DocumentMapper.For<Advert>();
-
-            _advert = Example.Advert();
+            new[] {Example.Advert()}.ToDocuments(d => _document = d);
         }
 
         [Test]
         [TestCaseSource("TestCases")]
         public void DocumentMapperShouldBeFastConvertingToDucment(int iterations)
         {
-            var elapsed = Time(() =>
-                {
-                    for (var i = 0; i < iterations; i++)
-                        _mapper.Convert(_advert);
-                });
+            var adverts = Example.Adverts(iterations);
+
+            var elapsed = Time(() => adverts.ToDocuments(d => { }));
 
             Debug.WriteLine("created {0} documents in {1}", iterations, elapsed);
 
             Assert.Pass();
         }
-
-        [Test]
-        [TestCaseSource("TestCases")]
-        public void DocumentMapperShouldBeFastConvertingToDucmentInParallel(int iterations)
-        {
-            var elapsed = Time(() => Parallel.For(0, iterations, _ => _mapper.Convert(_advert)));
-
-            Debug.WriteLine("created {0} documents in {1} (parallel)", iterations, elapsed);
-
-            Assert.Pass();
-        }
-
+        
         [Test]
         [TestCaseSource("TestCases")]
         public void DocumentMapperShouldBeFastConvertingFromDucment(int iterations)
         {
-            var document = _mapper.Convert(_advert);
+            var documents = Example.Instances(_document, iterations);
 
-            var elapsed = Time(() =>
-                {
-                    for (var i = 0; i < iterations; i++)
-                        _mapper.Convert(document);
-                });
+            var elapsed = Time(() => documents.ToList<Advert>());
             
             Debug.WriteLine("extracted from {0} documents in {1}", iterations, elapsed);
 

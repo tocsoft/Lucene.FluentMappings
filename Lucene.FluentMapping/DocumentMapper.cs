@@ -38,24 +38,9 @@ namespace Lucene.FluentMapping
             return Convert(documents, constructor);
         }
 
-        public static IDocumentMapper<TResult> For<TResult>()
-            where TResult : new()
-        {
-            return For(() => new TResult());
-        }
-
-        public static IDocumentMapper<TResult> For<TResult>(Func<TResult> constructor)
-        {
-            var mappings = GetMappings<TResult>();
-
-            return new DocumentMapper<TResult>(mappings, constructor);
-        }
-
         public static void ToDocuments<TMapped>(this IEnumerable<TMapped> instances, Action<Document> documentAction)
         {
-            var mappings = GetMappings<TMapped>();
-
-            var writer = new DocumentWriter<TMapped>(mappings);
+            var writer = GetDocumentWriter<TMapped>();
 
             // TODO can this be safely paralellised when IFieldMap becomes stateful?!
 
@@ -67,9 +52,7 @@ namespace Lucene.FluentMapping
 
         private static IList<TResult> Convert<TResult>(IEnumerable<Document> documents, Func<TResult> constructor)
         {
-            var mappings = GetMappings<TResult>();
-
-            var reader = new DocumentReader<TResult>(constructor, mappings);
+            var reader = GetDocumentReader(constructor);
 
             return documents
                 .AsParallel()
@@ -77,33 +60,18 @@ namespace Lucene.FluentMapping
                 .ToList();
         }
 
-        private static IEnumerable<IFieldMap<TResult>> GetMappings<TResult>()
+        private static DocumentWriter<TMapped> GetDocumentWriter<TMapped>()
         {
-            var mappingSource = _specifiedMappingSource ?? typeof (TResult).Assembly;
+            var mappings = MappingFactory.GetMappings<TMapped>(_specifiedMappingSource);
 
-            return MappingFactory.GetMappings<TResult>(mappingSource);
+            return new DocumentWriter<TMapped>(mappings);
         }
-    }
 
-    public class DocumentMapper<T> : IDocumentMapper<T>
-    {
-        private readonly DocumentReader<T> _reader;
-        private readonly DocumentWriter<T> _writer; 
-        
-        public DocumentMapper(IEnumerable<IFieldMap<T>> mappings, Func<T> create)
+        private static DocumentReader<TResult> GetDocumentReader<TResult>(Func<TResult> constructor)
         {
-            _reader = new DocumentReader<T>(create, mappings);
-            _writer = new DocumentWriter<T>(mappings);
-        }
-        
-        public Document Convert(T source)
-        {
-            return _writer.Write(source);
-        }
-        
-        public T Convert(Document source)
-        {
-            return _reader.Read(source);
+            var mappings = MappingFactory.GetMappings<TResult>(_specifiedMappingSource);
+
+            return new DocumentReader<TResult>(constructor, mappings);
         }
     }
 }

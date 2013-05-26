@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Lucene.FluentMapping;
+using Lucene.Net.Documents;
 
 namespace Lucene.FluentMappings.Demo
 {
@@ -36,6 +38,24 @@ namespace Lucene.FluentMappings.Demo
         public static IEnumerable<T> Instances<T>(Func<T> constructor, int count)
         {
             return Enumerable.Range(0, count).Select(_ => constructor());
+        }
+
+        public static IEnumerable<Document> Documents(int count)
+        {
+            var advert = Advert();
+
+            var document = Convert(advert);
+
+            return Instances(document, count);
+        }
+
+        private static Document Convert(Advert advert)
+        {
+            Document document = null;
+
+            new[] {advert}.ToDocuments(d => document = d);
+
+            return document;
         }
     }
 }

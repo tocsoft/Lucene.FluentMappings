@@ -8,8 +8,6 @@ namespace Lucene.FluentMappings.Demo
 {
     class Program
     {
-        private static IDocumentMapper<Advert> _mapper;
-        
         private static IEnumerable<Document> _documents;
         private static IEnumerable<Advert> _adverts;
 
@@ -17,11 +15,8 @@ namespace Lucene.FluentMappings.Demo
         {
             var iterations = 50000;
 
-            _mapper = DocumentMapper.For<Advert>();
             _adverts = Example.Adverts(iterations);
-            
-            var document =  _mapper.Convert(Example.Advert());
-            _documents = Example.Instances(document, iterations);
+            _documents = Example.Documents(iterations);
             
             ReadDocuments();
             WriteDocuments();
