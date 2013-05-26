@@ -12,7 +12,8 @@ namespace Lucene.FluentMappings.Demo
         private static IDocumentMapper<Advert> _mapper;
         private static Advert _advert;
         private static Document _document;
-        private static IList<Document> _documents;
+        private static IEnumerable<Document> _documents;
+        private static IEnumerable<Advert> _adverts;
 
         static void Main(string[] args)
         {
@@ -20,15 +21,14 @@ namespace Lucene.FluentMappings.Demo
             _advert = Example.Advert();
             _document =  _mapper.Convert(_advert);
             
-            var iterations = 10000;
+            var iterations = 50000;
 
-            _documents = Enumerable
-                .Range(0, iterations)
-                .Select(_ => _document).ToList();
-
+            _documents = Copy(_document, iterations);
+            _adverts = Copy(_advert, iterations);
+            
             ReadDocuments();
             //ReadDocumentsInParallel();
-            //WriteDocuments(iterations);
+            WriteDocuments();
             //WriteDocumentsInParallel(iterations);
 
             Console.ReadLine();
@@ -58,28 +58,27 @@ namespace Lucene.FluentMappings.Demo
             Console.WriteLine("extracted from {0} documents in {1} (parallel)", results.Count, elapsed);
         }
 
-        private static void WriteDocuments(int iterations)
+        private static void WriteDocuments()
         {
-            var documents = new List<Document>(iterations);
+            IList<Document> documents = null;
 
             var elapsed = Time(() =>
                 {
-                    for (var i = 0; i < iterations; i++)
-                        documents.Add(_mapper.Convert(_advert));
+                    documents = _adverts.Select(x => _mapper.Convert(x)).ToList();
                 });
 
             Console.WriteLine("created {0} documents in {1}", documents.Count, elapsed);
         }
 
-        private static void WriteDocumentsInParallel(int iterations)
+        private static void WriteDocumentsInParallel()
         {
-            List<Document> documents = null;
+            IList<Document> documents = null;
 
             var elapsed = Time(() =>
             {
-                documents = Enumerable.Range(0, iterations)
+                documents = _adverts
                     .AsParallel()
-                    .Select(_ => _mapper.Convert(_advert))
+                    .Select(x => _mapper.Convert(x))
                     .ToList();
             });
 
@@ -93,6 +92,13 @@ namespace Lucene.FluentMappings.Demo
             action();
 
             return stopwatch.Elapsed;
-        }   
+        }
+
+        private static IEnumerable<T> Copy<T>(T source, int iterations)
+        {
+            return Enumerable
+                .Range(0, iterations)
+                .Select(_ => source);
+        }
     }
 }
