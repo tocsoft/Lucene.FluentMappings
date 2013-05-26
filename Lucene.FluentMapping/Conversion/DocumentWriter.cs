@@ -6,24 +6,24 @@ namespace Lucene.FluentMapping.Conversion
 {
     public class DocumentWriter<T>
     {
-        private readonly IList<IField<T>> _fields;
+        private readonly List<IFieldWriter<T>> _writers;
 
         public Document Document { get; private set; }
 
-        public DocumentWriter(IEnumerable<IFieldWriter<T>> mappings, Document document = null)
+        public DocumentWriter(IEnumerable<IFieldWriterFactory<T>> mappings, Document document = null)
         {
-            _fields = mappings.Select(x => x.CreateField()).ToList();
+            _writers = mappings.Select(x => x.CreateFieldWriter()).ToList();
             
             Document = document ?? new Document();
             
-            foreach (var field in _fields)
-                Document.Add(field.Field);
+            foreach (var writer in _writers)
+                Document.Add(writer.Field);
         }
 
         public void UpdateFrom(T source)
         {
-            foreach (var field in _fields)
-                field.SetValueFrom(source);
+            foreach (var writer in _writers)
+                writer.WriteValueFrom(source);
         }
     }
 }

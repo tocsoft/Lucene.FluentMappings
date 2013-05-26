@@ -13,7 +13,7 @@ namespace Lucene.FluentMappings.Demo
 
         static void Main(string[] args)
         {
-            var iterations = 50000;
+            var iterations = 100000;
 
             _adverts = Example.Adverts(iterations);
             _documents = Example.Documents(iterations);

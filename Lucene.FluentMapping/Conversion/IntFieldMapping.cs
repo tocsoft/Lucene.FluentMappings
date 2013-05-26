@@ -45,11 +45,11 @@ namespace Lucene.FluentMapping.Conversion
             _index = index;
         }
 
-        public IField<T> CreateField()
+        public IFieldWriter<T> CreateFieldWriter()
         {
             var field = new NumericField(_name, Field.Store.YES, _index);
 
-            return new IntegerField<T>(_getValue, field);
+            return FieldWriter.For(field, _getValue, (f, i) => f.SetIntValue(i.HasValue ? i.Value : IntegerNullValue));
         }
 
         public Setter<T> ValueFrom(Document document)

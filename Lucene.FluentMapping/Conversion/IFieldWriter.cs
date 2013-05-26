@@ -1,7 +1,11 @@
+using Lucene.Net.Documents;
+
 namespace Lucene.FluentMapping.Conversion
 {
     public interface IFieldWriter<T>
     {
-        IField<T> CreateField();
+        IFieldable Field { get; }
+
+        void WriteValueFrom(T instance);
     }
 }

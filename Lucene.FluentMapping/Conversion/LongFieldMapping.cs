@@ -44,11 +44,11 @@ namespace Lucene.FluentMapping.Conversion
             _index = index;
         }
 
-        public IField<T> CreateField()
+        public IFieldWriter<T> CreateFieldWriter()
         {
             var field = new NumericField(_name, Field.Store.YES, _index);
 
-            return new LongField<T>(_getValue, field);
+            return FieldWriter.For(field, _getValue, (f, i) => f.SetLongValue(i.HasValue ? i.Value : NullValue));
         }
 
         public Setter<T> ValueFrom(Document document)
@@ -73,7 +73,7 @@ namespace Lucene.FluentMapping.Conversion
             return Value((long) numericField.NumericValue);
         }
 
-        private long? Value(long numericValue)
+        private static long? Value(long numericValue)
         {
             if (numericValue == NullValue)
                 return null;
