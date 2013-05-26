@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Lucene.FluentMapping.Conversion;
 
 namespace Lucene.FluentMapping.Configuration
@@ -10,40 +11,57 @@ namespace Lucene.FluentMapping.Configuration
     {
         private static readonly ConcurrentDictionary<Type, object> _mappingConfigurations = new ConcurrentDictionary<Type, object>();
 
-        public static IEnumerable<IFieldMap<T>> GetMappings<T>()
+        public static IEnumerable<IFieldMap<T>> GetMappings<T>(Assembly sourceAssembly)
         {
-            return GetMappingConfiguration<T>().BuildMappings();
-        }
-        
-        private static IMappingConfiguration<T> GetMappingConfiguration<T>()
-        {
-            return (IMappingConfiguration<T>)_mappingConfigurations.GetOrAdd(typeof (T), BuildMappingConfiguration);
+            return GetMappings<T>(new[] {sourceAssembly});
         }
 
-        private static object BuildMappingConfiguration(Type mappedType)
+        public static IEnumerable<IFieldMap<T>> GetMappings<T>(Assembly[] sourceAssemblies)
         {
-            var configurationType = FindMappingConfigurationType(mappedType);
+            return GetMappingConfiguration<T>(sourceAssemblies).BuildMappings();
+        }
+
+        private static IMappingConfiguration<T> GetMappingConfiguration<T>(Assembly[] sourceAssemblies)
+        {
+            return (IMappingConfiguration<T>)_mappingConfigurations.GetOrAdd(typeof (T), t => BuildMappingConfiguration(t, sourceAssemblies));
+        }
+
+        private static object BuildMappingConfiguration(Type mappedType, Assembly[] sourceAssemblies)
+        {
+            var configurationType = FindMappingConfigurationType(mappedType, sourceAssemblies);
 
             return Activator.CreateInstance(configurationType);
         }
 
-        private static Type FindMappingConfigurationType(Type mappedType)
+        private static Type FindMappingConfigurationType(Type mappedType, Assembly[] sourceAssemblies)
         {
             var interfaceType = typeof (IMappingConfiguration<>).MakeGenericType(mappedType);
 
-            var implementerType = FindImplementer(interfaceType);
+            var implementerType = FindImplementer(interfaceType, sourceAssemblies);
 
             if (implementerType == null)
-                throw new ArgumentException("Type implementing {0} not found", interfaceType.Name);
+                throw NotFound(interfaceType, sourceAssemblies);
 
             return implementerType;
         }
 
-        private static Type FindImplementer(Type interfaceType)
+        private static Type FindImplementer(Type interfaceType, Assembly[] sourceAssemblies)
         {
-            return AppDomain.CurrentDomain
+            return sourceAssemblies
                 .GetTypesImplementing(interfaceType)
                 .FirstOrDefault();
+        }
+
+        private static ArgumentException NotFound(Type interfaceType, IEnumerable<Assembly> scannedAssemblies)
+        {
+            var interfaceName = string.Concat(interfaceType.Name.Remove(interfaceType.Name.Length - 2), "<",
+                                              interfaceType.GetGenericArguments().First().Name, ">");
+
+            var locations = string.Join(Environment.NewLine, scannedAssemblies.Select(x => x.FullName));
+
+            var message = string.Format("Type implementing {0} not found. Looked in:{1} {2}", interfaceName, Environment.NewLine, locations);
+
+            return new ArgumentException(message);
         }
     }
 }

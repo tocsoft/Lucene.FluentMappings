@@ -20,7 +20,7 @@ namespace Lucene.FluentMappings.Demo
             _advert = Example.Advert();
             _document =  _mapper.Convert(_advert);
             
-            var iterations = 1000000;
+            var iterations = 10000;
 
             _documents = Enumerable
                 .Range(0, iterations)
@@ -30,6 +30,8 @@ namespace Lucene.FluentMappings.Demo
             //ReadDocumentsInParallel();
             //WriteDocuments(iterations);
             //WriteDocumentsInParallel(iterations);
+
+            Console.ReadLine();
         }
 
         private static void ReadDocuments()

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Lucene.FluentMapping.Configuration;
 using Lucene.FluentMapping.Conversion;
 using Lucene.Net.Documents;
@@ -9,17 +10,23 @@ namespace Lucene.FluentMapping
 {
     public static class DocumentMapper
     {
-        public static IDocumentMapper<TResult> For<TResult>()
-            where TResult : new()
+        private static Assembly _specifiedMappingSource;
+
+        public static void UseMappingsFromThisAssembly()
         {
-            return For(() => new TResult());
+            _specifiedMappingSource = Assembly.GetCallingAssembly();
         }
 
-        public static IDocumentMapper<TResult> For<TResult>(Func<TResult> constructor)
+        public static void UseMappingsFromAssemblyContaining<T>()
         {
-            return new DocumentMapper<TResult>(constructor);
+            UseMappingsFromAssembly(typeof(T).Assembly);
         }
 
+        public static void UseMappingsFromAssembly(Assembly assembly)
+        {
+            _specifiedMappingSource = assembly;
+        }
+        
         public static IList<TResult> ToList<TResult>(this IEnumerable<Document> documents)
             where TResult : new()
         {
@@ -29,6 +36,21 @@ namespace Lucene.FluentMapping
         public static IList<TResult> ToList<TResult>(this IEnumerable<Document> documents, Func<TResult> constructor)
         {
             return Convert(documents, For(constructor));
+        }
+
+        public static IDocumentMapper<TResult> For<TResult>()
+            where TResult : new()
+        {
+            return For(() => new TResult());
+        }
+
+        public static IDocumentMapper<TResult> For<TResult>(Func<TResult> constructor)
+        {
+            var mappingSource = _specifiedMappingSource ?? StackHelper.GetCallingAssembly();
+
+            var mappings = MappingFactory.GetMappings<TResult>(mappingSource).ToList();
+
+            return new DocumentMapper<TResult>(mappings, constructor);
         }
 
         public static void Stream<TMapped>(this IEnumerable<TMapped> instances, Action<Document> documentAction)
@@ -50,10 +72,8 @@ namespace Lucene.FluentMapping
         private readonly DocumentReader<T> _reader;
         private readonly DocumentWriter<T> _writer; 
         
-        public DocumentMapper(Func<T> create)
+        public DocumentMapper(IEnumerable<IFieldMap<T>> mappings, Func<T> create)
         {
-            var mappings = MappingFactory.GetMappings<T>().ToList();
-
             _reader = new DocumentReader<T>(create, mappings);
             _writer = new DocumentWriter<T>(mappings);
         }
@@ -67,6 +87,5 @@ namespace Lucene.FluentMapping
         {
             return _reader.Read(source);
         }
-
     }
 }

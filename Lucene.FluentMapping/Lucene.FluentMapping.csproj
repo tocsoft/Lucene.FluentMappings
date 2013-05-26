@@ -69,6 +69,7 @@
     <Compile Include="Conversion\StringLikeFieldMapping.cs" />
     <Compile Include="Conversion\TimestampMapping.cs" />
     <Compile Include="Conversion\UriFieldMapping.cs" />
+    <Compile Include="StackHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
