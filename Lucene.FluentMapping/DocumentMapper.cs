@@ -28,25 +28,22 @@ namespace Lucene.FluentMapping
             _specifiedMappingSource = assembly;
         }
         
-        public static IList<TResult> ToList<TResult>(this IEnumerable<Document> documents)
+        public static IList<TResult> ToList<TResult>(this IEnumerable<Document> documents, int? parallelism = null)
             where TResult : new()
         {
-            return ToList(documents, () => new TResult());
+            return ToList(documents, () => new TResult(), parallelism);
         }
 
-        public static IList<TResult> ToList<TResult>(this IEnumerable<Document> documents, Func<TResult> constructor)
+        public static IList<TResult> ToList<TResult>(this IEnumerable<Document> documents, Func<TResult> constructor, int? parallelism = null)
         {
-            return Convert(documents, constructor);
-        }
+            var reader = GetDocumentReader(constructor);
+            
+            var converted = documents.Select(reader.Read);
+            
+            if (parallelism.HasValue)
+                converted = converted.AsParallel().WithDegreeOfParallelism(parallelism.Value);
 
-        public static void ToDocumentsParallelEx<TMapped>(this IEnumerable<TMapped> instances, Action<Document> documentAction)
-        {
-            Parallel.ForEach(instances, GetDocumentWriter<TMapped>, (instance, _, writer) =>
-                {
-                    writer.UpdateFrom(instance);
-                    documentAction(writer.Document);
-                    return writer;
-                }, _ => { });
+            return converted.ToList();
         }
 
         public static void ToDocuments<TMapped>(this IEnumerable<TMapped> instances, Action<Document> documentAction)
@@ -61,14 +58,14 @@ namespace Lucene.FluentMapping
             }
         }
 
-        private static IList<TResult> Convert<TResult>(IEnumerable<Document> documents, Func<TResult> constructor)
+        public static void ToDocumentsParallelEx<TMapped>(this IEnumerable<TMapped> instances, Action<Document> documentAction)
         {
-            var reader = GetDocumentReader(constructor);
-
-            return documents
-                .AsParallel()
-                .Select(reader.Read)
-                .ToList();
+            Parallel.ForEach(instances, GetDocumentWriter<TMapped>, (instance, _, writer) =>
+                {
+                    writer.UpdateFrom(instance);
+                    documentAction(writer.Document);
+                    return writer;
+                }, _ => { });
         }
 
         private static DocumentWriter<TMapped> GetDocumentWriter<TMapped>()

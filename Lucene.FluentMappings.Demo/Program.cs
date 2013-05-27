@@ -14,7 +14,7 @@ namespace Lucene.FluentMappings.Demo
 
         static void Main(string[] args)
         {
-            var iterations = 1000000;
+            var iterations = 3000000;
 
             _adverts = Example.Adverts(iterations);
             _documents = Example.Documents(iterations);
@@ -22,8 +22,11 @@ namespace Lucene.FluentMappings.Demo
             Console.WriteLine("Starting");
 
             ReadDocuments();
+            ReadDocumentsParallel(2);        // slower :(
+            ReadDocumentsParallel(4);        // slower :(
+
             WriteDocuments();
-            WriteDocumentsParallel();
+            WriteDocumentsParallel();       // good boost
 
             Console.WriteLine("Finished");
 
@@ -40,6 +43,18 @@ namespace Lucene.FluentMappings.Demo
             });
 
             Console.WriteLine("extracted from {0} documents in {1}", results.Count, elapsed);
+        }
+
+        private static void ReadDocumentsParallel(int parallelism)
+        {
+            IList<Advert> results = null;
+
+            var elapsed = Time(() =>
+            {
+                results = _documents.ToList<Advert>(parallelism);
+            });
+
+            Console.WriteLine("extracted from {0} documents in {1} ({2} threads)", results.Count, elapsed, parallelism);
         }
 
         private static void WriteDocuments()
