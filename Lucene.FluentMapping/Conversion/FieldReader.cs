@@ -5,8 +5,8 @@ namespace Lucene.FluentMapping.Conversion
 {
     public class FieldReader<T, TProp> : IFieldReader<T>
     {
-        private Func<Document, TProp> _getValue;
-        private Action<T, TProp> _setValue;
+        private readonly Func<Document, TProp> _getValue;
+        private readonly Action<T, TProp> _setValue;
 
         public FieldReader(Func<Document, TProp> getValue, Action<T, TProp> setValue)
         {
