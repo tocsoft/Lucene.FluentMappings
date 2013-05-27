@@ -18,72 +18,31 @@ namespace Lucene.FluentMapping.Conversion
         }
     }
 
-    public class LongFieldMapping<T> : IFieldMap<T>
+    public class LongFieldMapping<T> : NumericFieldMapping<T, long>
     {
         private const long NullValue = long.MinValue;
 
-        private readonly Func<T, long?> _getValue;
-        private readonly Action<T, long?> _setValue;
+        public LongFieldMapping(Expression<Func<T, long>> property, bool index = false) 
+            : base(property, index)
+        { }
 
-        private readonly string _name;
-        private readonly bool _index;
+        public LongFieldMapping(Expression<Func<T, long?>> property, bool index = false) 
+            : base(property, index)
+        { }
 
-        public LongFieldMapping(Expression<Func<T, long?>> property, bool index = false)
+        protected override long? Convert(ValueType value)
         {
-            _getValue = ReflectionHelper.GetGetter(property);
-            _setValue = ReflectionHelper.GetSetter(property);
-            _name = ReflectionHelper.GetPropertyName(property);
-            _index = index;
-        }
+            var longValue = (long)value;
 
-        public LongFieldMapping(Expression<Func<T, long>> property, bool index = false)
-        {
-            _getValue = ReflectionHelper.GetGetter(property).Bind();
-            _setValue = ReflectionHelper.GetSetter(property).Bind();
-            _name = ReflectionHelper.GetPropertyName(property);
-            _index = index;
-        }
-
-        public IFieldWriter<T> CreateFieldWriter()
-        {
-            var field = new NumericField(_name, Field.Store.YES, _index);
-
-            return FieldWriter.For(field, _getValue, (f, i) => f.SetLongValue(i.HasValue ? i.Value : NullValue));
-        }
-
-        public Setter<T> ValueFrom(Document document)
-        {
-            var value = GetValue(document);
-
-            return new Setter<T>(x => _setValue(x, value));
-        }
-
-        private long? GetValue(Document document)
-        {
-            var field = document.GetFieldable(_name);
-
-            return ToLong(field as NumericField);
-        }
-
-        private static long? ToLong(NumericField numericField)
-        {
-            if (numericField == null || numericField.NumericValue == null)
+            if (longValue == NullValue)
                 return null;
 
-            return ToLong(numericField.NumericValue);
+            return longValue;
         }
 
-        private static long? ToLong(ValueType value)
+        protected override void SetValue(NumericField field, long? value)
         {
-            return Nullable((long) value);
-        }
-
-        private static long? Nullable(long numericValue)
-        {
-            if (numericValue == NullValue)
-                return null;
-
-            return numericValue;
+            field.SetLongValue(value.HasValue ? value.Value : NullValue);
         }
     }
 }
