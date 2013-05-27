@@ -14,14 +14,14 @@ namespace Lucene.FluentMappings.Demo
 
         static void Main(string[] args)
         {
-            var iterations = 5000000;
+            var iterations = 1000000;
 
             _adverts = Example.Adverts(iterations);
             _documents = Example.Documents(iterations);
 
             Console.WriteLine("Starting");
 
-            //ReadDocuments();
+            ReadDocuments();
             WriteDocuments();
             WriteDocumentsParallel();
 

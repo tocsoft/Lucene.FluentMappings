@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Lucene.Net.Documents;
 
 namespace Lucene.FluentMapping.Conversion
@@ -7,20 +8,20 @@ namespace Lucene.FluentMapping.Conversion
     public class DocumentReader<T>
     {
         private readonly Func<T> _create;
-        private readonly IEnumerable<IFieldReader<T>> _mappings;
+        private readonly IList<IFieldReader<T>> _readers;
 
-        public DocumentReader(Func<T> create, IEnumerable<IFieldReader<T>> mappings)
+        public DocumentReader(Func<T> create, IEnumerable<IFieldReaderFactory<T>> mappings)
         {
             _create = create;
-            _mappings = mappings;
+            _readers = mappings.Select(x => x.CreateFieldReader()).ToList();
         }
 
         public T Read(Document source)
         {
             var instance = _create();
 
-            foreach (var mapping in _mappings)
-                mapping.ValueFrom(source).Apply(instance);
+            foreach (var reader in _readers)
+                reader.Apply(source, instance);
 
             return instance;
         }

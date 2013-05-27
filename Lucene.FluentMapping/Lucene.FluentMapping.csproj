@@ -51,8 +51,10 @@
     <Compile Include="Configuration\AppDomainExtensions.cs" />
     <Compile Include="Conversion\DateTimeFieldMapping.cs" />
     <Compile Include="Conversion\DecimalFieldMapping.cs" />
+    <Compile Include="Conversion\FieldReader.cs" />
     <Compile Include="Conversion\FieldWriter.cs" />
     <Compile Include="Conversion\IFieldReader.cs" />
+    <Compile Include="Conversion\IFieldReaderFactory.cs" />
     <Compile Include="Conversion\IFieldWriter.cs" />
     <Compile Include="Conversion\IFieldWriterFactory.cs" />
     <Compile Include="Conversion\IFieldMap.cs" />
@@ -70,7 +72,6 @@
     <Compile Include="Conversion\DocumentWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuration\ReflectionHelper.cs" />
-    <Compile Include="Conversion\Setter.cs" />
     <Compile Include="Conversion\StringFieldMapping.cs" />
     <Compile Include="Conversion\StringLikeFieldMapping.cs" />
     <Compile Include="Conversion\TimestampMapping.cs" />

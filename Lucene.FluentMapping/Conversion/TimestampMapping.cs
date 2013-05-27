@@ -5,8 +5,6 @@ namespace Lucene.FluentMapping.Conversion
 {
     public class TimestampMapping<T> : IFieldMap<T>
     {
-        private static readonly Setter<T> _noOp = new Setter<T>(_ => { });
-
         private readonly string _name;
         private readonly DateTools.Resolution _datePrecision;
 
@@ -23,9 +21,9 @@ namespace Lucene.FluentMapping.Conversion
             return new FieldWriter<Field, T, string>(field, _ => Timestamp(), (f, x) => f.SetValue(x));
         }
 
-        public Setter<T> ValueFrom(Document document)
+        public IFieldReader<T> CreateFieldReader()
         {
-            return _noOp;
+            return new FieldReader<T, string>(d => null, (t, s) => { });
         }
 
         private string Timestamp()

@@ -37,12 +37,10 @@ namespace Lucene.FluentMapping.Conversion
 
             return FieldWriter.For(field, _getValue, (f, x) => f.SetValue(ToString(x)));
         }
-
-        public Setter<T> ValueFrom(Document document)
+        
+        public IFieldReader<T> CreateFieldReader()
         {
-            var field = document.Get(_name);
-            
-            return new Setter<T>(x => _setValue(x, FromString(field)));
+            return new FieldReader<T, TProperty>(d => FromString(d.Get(_name)), _setValue);
         }
     }
 }

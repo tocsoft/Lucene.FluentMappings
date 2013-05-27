@@ -12,8 +12,7 @@ namespace Lucene.FluentMapping.Conversion
             return new FieldWriter<TField, TSource, TProp>(field, getValue, apply);
         }
     }
-
-
+    
     public class FieldWriter<TField, TSource, TProp> : IFieldWriter<TSource>
         where TField : IFieldable
     {

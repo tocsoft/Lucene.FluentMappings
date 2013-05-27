@@ -38,12 +38,10 @@ namespace Lucene.FluentMapping.Conversion
 
             return FieldWriter.For(field, _getValue, SetValue);
         }
-
-        public Setter<T> ValueFrom(Document document)
+        
+        public IFieldReader<T> CreateFieldReader()
         {
-            var field = document.GetFieldable(_name) as NumericField;
-            
-            return new Setter<T>(x => _setValue(x, Convert(field)));
+            return new FieldReader<T, TProperty?>(d => Convert(d.GetFieldable(_name) as NumericField), _setValue);
         }
 
         private TProperty? Convert(NumericField field)

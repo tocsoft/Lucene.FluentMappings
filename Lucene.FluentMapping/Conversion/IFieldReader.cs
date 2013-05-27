@@ -4,6 +4,6 @@ namespace Lucene.FluentMapping.Conversion
 {
     public interface IFieldReader<T>
     {
-        Setter<T> ValueFrom(Document document);
+        void Apply(Document document, T instance);
     }
 }
