@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading;
 using Lucene.FluentMapping;
 using Lucene.Net.Documents;
 
@@ -14,7 +15,7 @@ namespace Lucene.FluentMappings.Demo
 
         static void Main(string[] args)
         {
-            var iterations = 3000000;
+            var iterations = 500000;
 
             _adverts = Example.Adverts(iterations);
             _documents = Example.Documents(iterations);
@@ -51,7 +52,10 @@ namespace Lucene.FluentMappings.Demo
 
             var elapsed = Time(() =>
             {
-                results = _documents.ToList<Advert>(parallelism);
+                results = _documents
+                    .AsParallel()
+                    .WithDegreeOfParallelism(parallelism)
+                    .ToList<Advert>();
             });
 
             Console.WriteLine("extracted from {0} documents in {1} ({2} threads)", results.Count, elapsed, parallelism);
@@ -59,20 +63,20 @@ namespace Lucene.FluentMappings.Demo
 
         private static void WriteDocuments()
         {
-            IList<Document> documents = new List<Document>();
+            var docCount = 0;
 
-            var elapsed = Time(() => _adverts.ToDocuments(documents.Add));
+            var elapsed = Time(() => _adverts.ToDocuments(_ => docCount++));
 
-            Console.WriteLine("wrote to {0} documents in {1}", documents.Count, elapsed);
+            Console.WriteLine("wrote to {0} documents in {1}", docCount, elapsed);
         }
 
         private static void WriteDocumentsParallel()
         {
-            var documents = new ConcurrentBag<Document>();
+            var docCount = 0;
 
-            var elapsed = Time(() => _adverts.ToDocumentsParallelEx(documents.Add));
+            var elapsed = Time(() => _adverts.ToDocumentsParallelEx(_ => Interlocked.Increment(ref docCount)));
 
-            Console.WriteLine("wrote to {0} documents in {1} (p)", documents.Count, elapsed);
+            Console.WriteLine("wrote to {0} documents in {1} (p)", docCount, elapsed);
         }
 
         private static TimeSpan Time(Action action)
