@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Lucene.FluentMapping.Configuration;
-using Lucene.FluentMapping.Conversion;
 using Lucene.FluentMappings.Demo;
 using NUnit.Framework;
 

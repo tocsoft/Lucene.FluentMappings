@@ -1,9 +1,9 @@
 using System;
 using System.Linq.Expressions;
-using Lucene.FluentMapping.Configuration;
+using Lucene.FluentMapping.Conversion;
 using Lucene.Net.Documents;
 
-namespace Lucene.FluentMapping.Conversion
+namespace Lucene.FluentMapping.Configuration
 {
     public class StringFieldMap<T, TProperty> : IFieldMap<T>, IConfigurableFieldMap<TextFieldOptions> 
         where TProperty : class

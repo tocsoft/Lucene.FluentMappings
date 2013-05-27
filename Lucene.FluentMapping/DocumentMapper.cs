@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Lucene.FluentMapping.Configuration;
-using Lucene.FluentMapping.Conversion;
 using Lucene.Net.Documents;
 
 namespace Lucene.FluentMapping

@@ -1,5 +1,4 @@
 using Lucene.FluentMapping.Configuration;
-using Lucene.FluentMapping.Conversion;
 using Lucene.FluentMappings.Demo;
 using Lucene.Net.Documents;
 using NUnit.Framework;

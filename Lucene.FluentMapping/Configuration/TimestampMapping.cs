@@ -1,8 +1,8 @@
 using System;
-using Lucene.FluentMapping.Configuration;
+using Lucene.FluentMapping.Conversion;
 using Lucene.Net.Documents;
 
-namespace Lucene.FluentMapping.Conversion
+namespace Lucene.FluentMapping.Configuration
 {
     public class TimestampMapping<T> : IFieldMap<T>
     {

@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Lucene.FluentMapping.Configuration;
+using Lucene.FluentMapping.Conversion;
 using Lucene.Net.Documents;
 
-namespace Lucene.FluentMapping.Conversion
+namespace Lucene.FluentMapping
 {
     public class DocumentWriter<T>
     {
