@@ -9,14 +9,14 @@ namespace Lucene.FluentMapping.Conversion
     {
         public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, string>> property, bool indexed = false)
         {
-            return @this.Add(new StringFieldMapping<T>(property, indexed ? Field.Index.ANALYZED : Field.Index.NOT_ANALYZED));
+            return @this.Add(new StringFieldMapping<T>(property).Configure(x => x.Index = indexed ? Field.Index.ANALYZED : Field.Index.NOT_ANALYZED));
         }
     }
 
     public class StringFieldMapping<T> : StringLikeFieldMapping<T, string>
     {
-        public StringFieldMapping(Expression<Func<T, string>> property, Field.Index index) 
-            : base(property, index)
+        public StringFieldMapping(Expression<Func<T, string>> property)
+            : base(property)
         { }
 
         protected override string FromString(string value)

@@ -5,22 +5,21 @@ using Lucene.Net.Documents;
 
 namespace Lucene.FluentMapping.Conversion
 {
-    public abstract class StringLikeFieldMapping<T, TProperty> : IFieldMap<T>
+    public abstract class StringLikeFieldMapping<T, TProperty> : IFieldMap<T>, IConfigurable<T, TextFieldOpions> 
         where TProperty : class
     {
+        private readonly TextFieldOpions _options = new TextFieldOpions();
         private readonly string _name;
         private readonly Func<T, TProperty> _getValue;
         private readonly Action<T, TProperty> _setValue;
-        private readonly Field.Index? _index;
 
         protected abstract TProperty FromString(string value);
 
-        protected StringLikeFieldMapping(Expression<Func<T, TProperty>> property, Field.Index? index = null)
+        protected StringLikeFieldMapping(Expression<Func<T, TProperty>> property)
         {
             _name = ReflectionHelper.GetPropertyName(property);
             _getValue = ReflectionHelper.GetGetter(property);
             _setValue = ReflectionHelper.GetSetter(property);
-            _index = index;
         }
         
         protected virtual string ToString(TProperty value)
@@ -33,7 +32,7 @@ namespace Lucene.FluentMapping.Conversion
         
         public IFieldWriter<T> CreateFieldWriter()
         {
-            var field = new Field(_name, string.Empty, Field.Store.YES, _index ?? Field.Index.NOT_ANALYZED);
+            var field = new Field(_name, string.Empty, _options.Store, _options.Index, _options.TermVector);
 
             return FieldWriter.For(field, _getValue, (f, x) => f.SetValue(ToString(x)));
         }
@@ -41,6 +40,13 @@ namespace Lucene.FluentMapping.Conversion
         public IFieldReader<T> CreateFieldReader()
         {
             return new FieldReader<T, TProperty>(d => FromString(d.Get(_name)), _setValue);
+        }
+
+        public IFieldMap<T> Configure(Action<TextFieldOpions> configure)
+        {
+            configure(_options);
+
+            return this;
         }
     }
 }

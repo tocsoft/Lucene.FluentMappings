@@ -9,12 +9,12 @@ namespace Lucene.FluentMapping.Conversion
     {
         public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, int>> property, bool indexed = false)
         {
-            return @this.Add(new IntFieldMapping<T>(property, indexed));
+            return @this.Add(new IntFieldMapping<T>(property).Configure(o => o.Index = indexed));
         }
 
         public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, int?>> property, bool indexed = false)
         {
-            return @this.Add(new IntFieldMapping<T>(property, indexed));
+            return @this.Add(new IntFieldMapping<T>(property).Configure(o => o.Index = indexed));
         }
     }
 
@@ -22,12 +22,12 @@ namespace Lucene.FluentMapping.Conversion
     {
         private const int NullValue = int.MinValue;
 
-        public IntFieldMapping(Expression<Func<T, int>> property, bool index = false) 
-            : base(property, index)
+        public IntFieldMapping(Expression<Func<T, int>> property) 
+            : base(property)
         { }
 
-        public IntFieldMapping(Expression<Func<T, int?>> property, bool index = false) 
-            : base(property, index)
+        public IntFieldMapping(Expression<Func<T, int?>> property)
+            : base(property)
         { }
 
         protected override int? Convert(ValueType value)

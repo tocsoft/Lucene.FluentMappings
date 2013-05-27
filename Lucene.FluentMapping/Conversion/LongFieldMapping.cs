@@ -9,12 +9,12 @@ namespace Lucene.FluentMapping.Conversion
     {
         public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, long>> property, bool indexed = false)
         {
-            return @this.Add(new LongFieldMapping<T>(property, indexed));
+            return @this.Add(new LongFieldMapping<T>(property).Configure(o => o.Index = indexed));
         }
 
         public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, long?>> property, bool indexed = false)
         {
-            return @this.Add(new LongFieldMapping<T>(property, indexed));
+            return @this.Add(new LongFieldMapping<T>(property).Configure(o => o.Index = indexed));
         }
     }
 
@@ -22,12 +22,12 @@ namespace Lucene.FluentMapping.Conversion
     {
         private const long NullValue = long.MinValue;
 
-        public LongFieldMapping(Expression<Func<T, long>> property, bool index = false) 
-            : base(property, index)
+        public LongFieldMapping(Expression<Func<T, long>> property)
+            : base(property)
         { }
 
-        public LongFieldMapping(Expression<Func<T, long?>> property, bool index = false) 
-            : base(property, index)
+        public LongFieldMapping(Expression<Func<T, long?>> property)
+            : base(property)
         { }
 
         protected override long? Convert(ValueType value)

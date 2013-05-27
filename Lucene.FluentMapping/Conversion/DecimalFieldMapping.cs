@@ -9,25 +9,25 @@ namespace Lucene.FluentMapping.Conversion
     {
         public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, decimal>> property, bool indexed = false)
         {
-            return @this.Add(new DecimalFieldMapping<T>(property, indexed));
+            return @this.Add(new DecimalFieldMapping<T>(property).Configure(o => o.Index = indexed));
         }
 
         public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, decimal?>> property, bool indexed = false)
         {
-            return @this.Add(new DecimalFieldMapping<T>(property, indexed));
+            return @this.Add(new DecimalFieldMapping<T>(property).Configure(o => o.Index = indexed));
         }
     }
 
     public class DecimalFieldMapping<T> : NumericFieldMapping<T, decimal>
     {
-        private readonly double _nullValue = double.NaN;
+        private const double NullValue = double.NaN;
 
-        public DecimalFieldMapping(Expression<Func<T, decimal>> property, bool index = false) 
-            : base(property, index)
+        public DecimalFieldMapping(Expression<Func<T, decimal>> property)
+            : base(property)
         { }
 
-        public DecimalFieldMapping(Expression<Func<T, decimal?>> property, bool index = false) 
-            : base(property, index)
+        public DecimalFieldMapping(Expression<Func<T, decimal?>> property)
+            : base(property)
         { }
 
         protected override decimal? Convert(ValueType value)
@@ -42,7 +42,7 @@ namespace Lucene.FluentMapping.Conversion
 
         protected override void SetValue(NumericField field, decimal? value)
         {
-            var fieldValue = value.HasValue ? (double)value.Value : _nullValue;
+            var fieldValue = value.HasValue ? (double)value.Value : NullValue;
 
             field.SetDoubleValue(fieldValue);
         }

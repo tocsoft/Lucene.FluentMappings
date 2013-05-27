@@ -9,14 +9,14 @@ namespace Lucene.FluentMapping.Conversion
     {
         public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, Uri>> property, bool indexed = false)
         {
-            return @this.Add(new UriFieldMapping<T>(property, indexed ? Field.Index.ANALYZED : Field.Index.NOT_ANALYZED));
+            return @this.Add(new UriFieldMapping<T>(property).Configure(x => x.Index = indexed ? Field.Index.ANALYZED : Field.Index.NOT_ANALYZED));
         }
     }
 
     public class UriFieldMapping<T> : StringLikeFieldMapping<T, Uri>
     {
-        public UriFieldMapping(Expression<Func<T, Uri>> property, Field.Index index) 
-            : base(property, index)
+        public UriFieldMapping(Expression<Func<T, Uri>> property)
+            : base(property)
         { }
 
         protected override Uri FromString(string value)
