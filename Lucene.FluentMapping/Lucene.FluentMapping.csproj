@@ -51,6 +51,7 @@
     <Compile Include="Configuration\AppDomainExtensions.cs" />
     <Compile Include="Configuration\Mappings.cs" />
     <Compile Include="Configuration\ConfigurableFieldMapExtensions.cs" />
+    <Compile Include="Configuration\NumericFieldMap.cs" />
     <Compile Include="Conversion\DateTimeFieldAccessor.cs" />
     <Compile Include="Configuration\DateTimeFieldMappingBuilderExtensions.cs" />
     <Compile Include="Conversion\DecimalFieldAccessor.cs" />
@@ -66,7 +67,7 @@
     <Compile Include="Configuration\IMappingConfiguration.cs" />
     <Compile Include="Conversion\IntFieldAccessor.cs" />
     <Compile Include="Configuration\NumericFieldMappingBuilderExtensions.cs" />
-    <Compile Include="Configuration\NumericFieldMap.cs" />
+    <Compile Include="Configuration\FieldMap.cs" />
     <Compile Include="Configuration\NumericFieldOptions.cs" />
     <Compile Include="Configuration\TextFieldOptions.cs" />
     <Compile Include="Configuration\TextFieldMappingBuilderExtensions.cs" />

@@ -1,5 +1,3 @@
-using Lucene.FluentMapping.Conversion;
-
 namespace Lucene.FluentMapping.Configuration
 {
     public static class MappingBuilderExtensions

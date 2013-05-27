@@ -34,7 +34,7 @@ namespace Lucene.FluentMapping.Configuration
             _getValue = ReflectionHelper.GetGetter(property);
             _setValue = ReflectionHelper.GetSetter(property);
         }
-
+        
         public IFieldWriter<T> CreateFieldWriter()
         {
             var field = new NumericField(_name, Options.Precision, Options.Store, Options.Index);
