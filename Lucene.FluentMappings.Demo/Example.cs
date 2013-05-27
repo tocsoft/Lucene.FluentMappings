@@ -10,7 +10,7 @@ namespace Lucene.FluentMappings.Demo
     {
         public static IEnumerable<Advert> Adverts(int count)
         {
-            return Instances(Advert, count);
+            return Instances(Advert(), count).ToList();
         }
 
         public static Advert Advert()
