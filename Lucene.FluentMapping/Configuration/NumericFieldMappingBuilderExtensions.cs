@@ -8,32 +8,32 @@ namespace Lucene.FluentMapping.Configuration
     {
         public static IConfigurableFieldMap<NumericFieldOptions> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, int>> property)
         {
-            return @this.Add(new NumericFieldMap<T, int>(property, new IntFieldAccessor()));
+            return @this.Map(new NumericFieldMap<T, int>(property, new IntFieldAccessor()));
         }
 
         public static IConfigurableFieldMap<NumericFieldOptions> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, int?>> property)
         {
-            return @this.Add(new NumericFieldMap<T, int>(property, new IntFieldAccessor()));
+            return @this.Map(new NumericFieldMap<T, int>(property, new IntFieldAccessor()));
         }
 
         public static IConfigurableFieldMap<NumericFieldOptions> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, long>> property)
         {
-            return @this.Add(new NumericFieldMap<T, long>(property, new LongFieldAccessor()));
+            return @this.Map(new NumericFieldMap<T, long>(property, new LongFieldAccessor()));
         }
 
         public static IConfigurableFieldMap<NumericFieldOptions> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, long?>> property)
         {
-            return @this.Add(new NumericFieldMap<T, long>(property, new LongFieldAccessor()));
+            return @this.Map(new NumericFieldMap<T, long>(property, new LongFieldAccessor()));
         }
 
         public static IConfigurableFieldMap<NumericFieldOptions> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, decimal>> property)
         {
-            return @this.Add(new NumericFieldMap<T, decimal>(property, new DecimalFieldAccessor()));
+            return @this.Map(new NumericFieldMap<T, decimal>(property, new DecimalFieldAccessor()));
         }
 
         public static IConfigurableFieldMap<NumericFieldOptions> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, decimal?>> property)
         {
-            return @this.Add(new NumericFieldMap<T, decimal>(property, new DecimalFieldAccessor()));
+            return @this.Map(new NumericFieldMap<T, decimal>(property, new DecimalFieldAccessor()));
         }
     }
 }

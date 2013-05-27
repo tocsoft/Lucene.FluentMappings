@@ -8,12 +8,12 @@ namespace Lucene.FluentMapping.Configuration
     {
         public static IConfigurableFieldMap<NumericFieldOptions> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, DateTime>> property)
         {
-            return @this.Add(new NumericFieldMap<T, DateTime>(property, new DateTimeFieldAccessor()));
+            return @this.Map(new NumericFieldMap<T, DateTime>(property, new DateTimeFieldAccessor()));
         }
 
         public static IConfigurableFieldMap<NumericFieldOptions> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, DateTime?>> property)
         {
-            return @this.Add(new NumericFieldMap<T, DateTime>(property, new DateTimeFieldAccessor()));
+            return @this.Map(new NumericFieldMap<T, DateTime>(property, new DateTimeFieldAccessor()));
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Lucene.FluentMapping.Configuration
             get { return _mappings; }
         }
 
-        public TMap Add<TMap>(TMap fieldMapping)
+        public TMap Map<TMap>(TMap fieldMapping)
             where TMap : IFieldMap<T>
         {
             _mappings.Add(fieldMapping);

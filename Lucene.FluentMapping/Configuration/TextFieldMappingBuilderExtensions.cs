@@ -8,12 +8,12 @@ namespace Lucene.FluentMapping.Configuration
     {
         public static IConfigurableFieldMap<TextFieldOptions> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, string>> property)
         {
-            return @this.Add(new StringFieldMap<T, string>(property, new StringFieldAccessor()));
+            return @this.Map(new StringFieldMap<T, string>(property, new StringFieldAccessor()));
         }
         
         public static IConfigurableFieldMap<TextFieldOptions> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, Uri>> property)
         {
-            return @this.Add(new StringFieldMap<T, Uri>(property, new UriFieldAccessor()));
+            return @this.Map(new StringFieldMap<T, Uri>(property, new UriFieldAccessor()));
         }
     }
 }
