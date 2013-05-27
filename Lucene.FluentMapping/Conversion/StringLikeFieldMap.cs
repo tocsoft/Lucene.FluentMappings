@@ -5,7 +5,7 @@ using Lucene.Net.Documents;
 
 namespace Lucene.FluentMapping.Conversion
 {
-    public abstract class StringLikeFieldMapping<T, TProperty> : IFieldMap<T>, IConfigurable<T, TextFieldOpions> 
+    public abstract class StringLikeFieldMap<T, TProperty> : IFieldMap<T>, IConfigurable<T, TextFieldOpions> 
         where TProperty : class
     {
         private readonly TextFieldOpions _options = new TextFieldOpions();
@@ -15,7 +15,7 @@ namespace Lucene.FluentMapping.Conversion
 
         protected abstract TProperty FromString(string value);
 
-        protected StringLikeFieldMapping(Expression<Func<T, TProperty>> property)
+        protected StringLikeFieldMap(Expression<Func<T, TProperty>> property)
         {
             _name = ReflectionHelper.GetPropertyName(property);
             _getValue = ReflectionHelper.GetGetter(property);

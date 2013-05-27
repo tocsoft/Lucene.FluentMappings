@@ -9,26 +9,26 @@ namespace Lucene.FluentMapping.Conversion
     {
         public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, DateTime>> property, bool indexed = false)
         {
-            return @this.Add(new DateTimeFieldMapping<T>(property)
+            return @this.Add(new DateTimeFieldMap<T>(property)
                                  .Configure(o => o.Index = indexed));
         }
 
         public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, DateTime?>> property, bool indexed = false)
         {
-            return @this.Add(new DateTimeFieldMapping<T>(property)
+            return @this.Add(new DateTimeFieldMap<T>(property)
                                  .Configure(o => o.Index = indexed));
         }
     }
 
-    public class DateTimeFieldMapping<T> : NumericFieldMapping<T, DateTime>
+    public class DateTimeFieldMap<T> : NumericFieldMap<T, DateTime>
     {
         private readonly long _nullValue = DateTime.MinValue.Ticks;
         
-        public DateTimeFieldMapping(Expression<Func<T, DateTime>> property)
+        public DateTimeFieldMap(Expression<Func<T, DateTime>> property)
             : base(property)
         { }
 
-        public DateTimeFieldMapping(Expression<Func<T, DateTime?>> property)
+        public DateTimeFieldMap(Expression<Func<T, DateTime?>> property)
             : base(property)
         { }
 

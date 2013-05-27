@@ -5,28 +5,28 @@ using Lucene.Net.Documents;
 
 namespace Lucene.FluentMapping.Conversion
 {
-    public static class IntFieldMapping
+    public static class IntFieldMap
     {
         public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, int>> property, bool indexed = false)
         {
-            return @this.Add(new IntFieldMapping<T>(property).Configure(o => o.Index = indexed));
+            return @this.Add(new IntFieldMap<T>(property).Configure(o => o.Index = indexed));
         }
 
         public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, int?>> property, bool indexed = false)
         {
-            return @this.Add(new IntFieldMapping<T>(property).Configure(o => o.Index = indexed));
+            return @this.Add(new IntFieldMap<T>(property).Configure(o => o.Index = indexed));
         }
     }
 
-    public class IntFieldMapping<T> : NumericFieldMapping<T, int>
+    public class IntFieldMap<T> : NumericFieldMap<T, int>
     {
         private const int NullValue = int.MinValue;
 
-        public IntFieldMapping(Expression<Func<T, int>> property) 
+        public IntFieldMap(Expression<Func<T, int>> property) 
             : base(property)
         { }
 
-        public IntFieldMapping(Expression<Func<T, int?>> property)
+        public IntFieldMap(Expression<Func<T, int?>> property)
             : base(property)
         { }
 

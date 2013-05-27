@@ -5,28 +5,28 @@ using Lucene.Net.Documents;
 
 namespace Lucene.FluentMapping.Conversion
 {
-    public static class DecimalFieldMapping
+    public static class DecimalFieldMap
     {
         public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, decimal>> property, bool indexed = false)
         {
-            return @this.Add(new DecimalFieldMapping<T>(property).Configure(o => o.Index = indexed));
+            return @this.Add(new DecimalFieldMap<T>(property).Configure(o => o.Index = indexed));
         }
 
         public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, decimal?>> property, bool indexed = false)
         {
-            return @this.Add(new DecimalFieldMapping<T>(property).Configure(o => o.Index = indexed));
+            return @this.Add(new DecimalFieldMap<T>(property).Configure(o => o.Index = indexed));
         }
     }
 
-    public class DecimalFieldMapping<T> : NumericFieldMapping<T, decimal>
+    public class DecimalFieldMap<T> : NumericFieldMap<T, decimal>
     {
         private const double NullValue = double.NaN;
 
-        public DecimalFieldMapping(Expression<Func<T, decimal>> property)
+        public DecimalFieldMap(Expression<Func<T, decimal>> property)
             : base(property)
         { }
 
-        public DecimalFieldMapping(Expression<Func<T, decimal?>> property)
+        public DecimalFieldMap(Expression<Func<T, decimal?>> property)
             : base(property)
         { }
 

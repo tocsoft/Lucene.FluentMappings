@@ -5,7 +5,7 @@ using Lucene.Net.Documents;
 
 namespace Lucene.FluentMapping.Conversion
 {
-    public abstract class NumericFieldMapping<T, TProperty> : IFieldMap<T>, IConfigurable<T, NumericFieldOptions>
+    public abstract class NumericFieldMap<T, TProperty> : IFieldMap<T>, IConfigurable<T, NumericFieldOptions>
         where TProperty : struct
     {
         private readonly string _name;
@@ -16,14 +16,14 @@ namespace Lucene.FluentMapping.Conversion
         protected abstract TProperty? Convert(ValueType value);
         protected abstract void SetValue(NumericField field, TProperty? value);
 
-        protected NumericFieldMapping(Expression<Func<T, TProperty>> property)
+        protected NumericFieldMap(Expression<Func<T, TProperty>> property)
         {
             _name = ReflectionHelper.GetPropertyName(property);
             _getValue = ReflectionHelper.GetGetter(property).Bind();
             _setValue = ReflectionHelper.GetSetter(property).Bind();
         }
 
-        protected NumericFieldMapping(Expression<Func<T, TProperty?>> property)
+        protected NumericFieldMap(Expression<Func<T, TProperty?>> property)
         {
             _name = ReflectionHelper.GetPropertyName(property);
             _getValue = ReflectionHelper.GetGetter(property);
