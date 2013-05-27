@@ -7,16 +7,14 @@ namespace Lucene.FluentMapping.Conversion
 {
     public static class DateTimeFieldMapping
     {
-        public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, DateTime>> property, bool indexed = false)
+        public static IConfigurableFieldMap<NumericFieldOptions> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, DateTime>> property)
         {
-            return @this.Add(new DateTimeFieldMap<T>(property)
-                                 .Configure(o => o.Index = indexed));
+            return @this.Add(new DateTimeFieldMap<T>(property));
         }
 
-        public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, DateTime?>> property, bool indexed = false)
+        public static IConfigurableFieldMap<NumericFieldOptions> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, DateTime?>> property)
         {
-            return @this.Add(new DateTimeFieldMap<T>(property)
-                                 .Configure(o => o.Index = indexed));
+            return @this.Add(new DateTimeFieldMap<T>(property));
         }
     }
 

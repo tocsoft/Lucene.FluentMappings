@@ -14,13 +14,5 @@ namespace Lucene.FluentMapping.Conversion
             Index = true;
             Precision = 4;
         }
-
-        public static NumericFieldOptions Stored()
-        {
-            return new NumericFieldOptions
-                {
-                    Store = Field.Store.YES
-                };
-        }
     }
 }

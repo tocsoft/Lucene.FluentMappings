@@ -2,16 +2,16 @@ using Lucene.Net.Documents;
 
 namespace Lucene.FluentMapping.Conversion
 {
-    public class TextFieldOpions
+    public class TextFieldOptions
     {
         public Field.Index Index { get; set; }
         public Field.Store Store { get; set; }
         public Field.TermVector TermVector { get; set; }
 
-        public TextFieldOpions()
+        public TextFieldOptions()
         {
             Index = Field.Index.ANALYZED;
-            Store = Field.Store.NO;
+            Store = Field.Store.YES;
             TermVector = Field.TermVector.NO;
         }
     }

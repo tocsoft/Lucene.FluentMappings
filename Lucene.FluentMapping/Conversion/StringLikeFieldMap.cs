@@ -5,10 +5,10 @@ using Lucene.Net.Documents;
 
 namespace Lucene.FluentMapping.Conversion
 {
-    public abstract class StringLikeFieldMap<T, TProperty> : IFieldMap<T>, IConfigurable<T, TextFieldOpions> 
+    public abstract class StringLikeFieldMap<T, TProperty> : IFieldMap<T>, IConfigurableFieldMap<TextFieldOptions> 
         where TProperty : class
     {
-        private readonly TextFieldOpions _options = new TextFieldOpions();
+        private readonly TextFieldOptions _options = new TextFieldOptions();
         private readonly string _name;
         private readonly Func<T, TProperty> _getValue;
         private readonly Action<T, TProperty> _setValue;
@@ -42,11 +42,10 @@ namespace Lucene.FluentMapping.Conversion
             return new FieldReader<T, TProperty>(d => FromString(d.Get(_name)), _setValue);
         }
 
-        public IFieldMap<T> Configure(Action<TextFieldOpions> configure)
+        public void Configure(Action<TextFieldOptions> configure)
         {
-            configure(_options);
-
-            return this;
+            if (configure != null)
+                configure(_options);
         }
     }
 }

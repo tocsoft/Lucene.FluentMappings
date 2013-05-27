@@ -7,14 +7,14 @@ namespace Lucene.FluentMapping.Conversion
 {
     public static class DecimalFieldMap
     {
-        public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, decimal>> property, bool indexed = false)
+        public static IConfigurableFieldMap<NumericFieldOptions> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, decimal>> property)
         {
-            return @this.Add(new DecimalFieldMap<T>(property).Configure(o => o.Index = indexed));
+            return @this.Add(new DecimalFieldMap<T>(property));
         }
 
-        public static MappingBuilder<T> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, decimal?>> property, bool indexed = false)
+        public static IConfigurableFieldMap<NumericFieldOptions> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, decimal?>> property)
         {
-            return @this.Add(new DecimalFieldMap<T>(property).Configure(o => o.Index = indexed));
+            return @this.Add(new DecimalFieldMap<T>(property));
         }
     }
 

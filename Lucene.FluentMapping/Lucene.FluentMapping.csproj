@@ -49,11 +49,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\AppDomainExtensions.cs" />
+    <Compile Include="Configuration\Mappings.cs" />
     <Compile Include="Conversion\DateTimeFieldMap.cs" />
     <Compile Include="Conversion\DecimalFieldMap.cs" />
     <Compile Include="Conversion\FieldReader.cs" />
     <Compile Include="Conversion\FieldWriter.cs" />
-    <Compile Include="Conversion\IConfigurable.cs" />
+    <Compile Include="Conversion\IConfigurableFieldMap.cs" />
     <Compile Include="Conversion\IFieldReader.cs" />
     <Compile Include="Conversion\IFieldReaderFactory.cs" />
     <Compile Include="Conversion\IFieldWriter.cs" />
@@ -63,13 +64,12 @@
     <Compile Include="Conversion\IntFieldMap.cs" />
     <Compile Include="Conversion\NumericFieldMap.cs" />
     <Compile Include="Conversion\NumericFieldOptions.cs" />
-    <Compile Include="Conversion\TextFieldOpions.cs" />
+    <Compile Include="Conversion\TextFieldOptions.cs" />
     <Compile Include="DocumentMapper.cs" />
     <Compile Include="Conversion\LongFieldMap.cs" />
     <Compile Include="Configuration\MappingBuilder.cs" />
     <Compile Include="Configuration\MappingBuilderExtensions.cs" />
     <Compile Include="Configuration\MappingFactory.cs" />
-    <Compile Include="Configuration\Mappings.cs" />
     <Compile Include="Configuration\NullablePropertyExpressionConverter.cs" />
     <Compile Include="Conversion\DocumentReader.cs" />
     <Compile Include="Conversion\DocumentWriter.cs" />
