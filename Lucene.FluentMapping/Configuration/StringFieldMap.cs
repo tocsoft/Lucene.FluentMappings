@@ -29,7 +29,10 @@ namespace Lucene.FluentMapping.Configuration
         
         public IFieldWriter<T> CreateFieldWriter()
         {
-            var field = new Field(_name, string.Empty, _options.Store, _options.Index, _options.TermVector);
+            var field = new Field(_name, string.Empty, _options.Store, _options.Index, _options.TermVector)
+                {
+                    Boost = _options.Boost
+                };
 
             return FieldWriter.For(field, _getValue, _fieldAccessor.SetValue);
         }

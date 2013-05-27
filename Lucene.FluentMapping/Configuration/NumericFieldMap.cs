@@ -37,8 +37,11 @@ namespace Lucene.FluentMapping.Configuration
         
         public IFieldWriter<T> CreateFieldWriter()
         {
-            var field = new NumericField(_name, Options.Precision, Options.Store, Options.Index);
-
+            var field = new NumericField(_name, _options.Precision, _options.Store, _options.Index)
+                {
+                    Boost = _options.Boost
+                };
+            
             return FieldWriter.For(field, _getValue, _fieldAccessor.SetValue);
         }
 
