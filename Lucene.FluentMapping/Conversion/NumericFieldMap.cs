@@ -8,10 +8,15 @@ namespace Lucene.FluentMapping.Conversion
     public abstract class NumericFieldMap<T, TProperty> : IFieldMap<T>, IConfigurableFieldMap<NumericFieldOptions>
         where TProperty : struct
     {
+        private readonly NumericFieldOptions _options = new NumericFieldOptions();
         private readonly string _name;
         private readonly Func<T, TProperty?> _getValue;
         private readonly Action<T, TProperty?> _setValue;
-        private readonly NumericFieldOptions _options = new NumericFieldOptions();
+
+        public NumericFieldOptions Options
+        {
+            get { return _options; }
+        }
 
         protected abstract TProperty? Convert(ValueType value);
         protected abstract void SetValue(NumericField field, TProperty? value);
@@ -32,7 +37,7 @@ namespace Lucene.FluentMapping.Conversion
 
         public IFieldWriter<T> CreateFieldWriter()
         {
-            var field = new NumericField(_name, _options.Precision, _options.Store, _options.Index);
+            var field = new NumericField(_name, Options.Precision, Options.Store, Options.Index);
 
             return FieldWriter.For(field, _getValue, SetValue);
         }
@@ -41,13 +46,7 @@ namespace Lucene.FluentMapping.Conversion
         {
             return new FieldReader<T, TProperty?>(d => Convert(d.GetFieldable(_name) as NumericField), _setValue);
         }
-
-        public void Configure(Action<NumericFieldOptions> configure)
-        {
-            if (configure != null)
-                configure(_options);
-        }
-
+        
         private TProperty? Convert(NumericField field)
         {
             if (field == null || field.NumericValue == null)

@@ -1,6 +1,6 @@
 using Lucene.Net.Documents;
 
-namespace Lucene.FluentMapping.Conversion
+namespace Lucene.FluentMapping.Configuration
 {
     public class TextFieldOptions
     {

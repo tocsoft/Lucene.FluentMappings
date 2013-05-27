@@ -1,4 +1,5 @@
 using System;
+using Lucene.FluentMapping.Configuration;
 using Lucene.Net.Documents;
 
 namespace Lucene.FluentMapping.Conversion

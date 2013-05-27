@@ -15,13 +15,18 @@ namespace Lucene.FluentMapping.Conversion
 
         protected abstract TProperty FromString(string value);
 
+        public TextFieldOptions Options
+        {
+            get { return _options; }
+        }
+
         protected StringLikeFieldMap(Expression<Func<T, TProperty>> property)
         {
             _name = ReflectionHelper.GetPropertyName(property);
             _getValue = ReflectionHelper.GetGetter(property);
             _setValue = ReflectionHelper.GetSetter(property);
         }
-        
+
         protected virtual string ToString(TProperty value)
         {
             if (value == null)
@@ -29,23 +34,17 @@ namespace Lucene.FluentMapping.Conversion
 
             return value.ToString();
         }
-        
+
         public IFieldWriter<T> CreateFieldWriter()
         {
             var field = new Field(_name, string.Empty, _options.Store, _options.Index, _options.TermVector);
 
             return FieldWriter.For(field, _getValue, (f, x) => f.SetValue(ToString(x)));
         }
-        
+
         public IFieldReader<T> CreateFieldReader()
         {
             return new FieldReader<T, TProperty>(d => FromString(d.Get(_name)), _setValue);
-        }
-
-        public void Configure(Action<TextFieldOptions> configure)
-        {
-            if (configure != null)
-                configure(_options);
         }
     }
 }

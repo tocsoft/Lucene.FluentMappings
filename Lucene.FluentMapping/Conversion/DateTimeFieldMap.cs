@@ -1,23 +1,9 @@
 using System;
 using System.Linq.Expressions;
-using Lucene.FluentMapping.Configuration;
 using Lucene.Net.Documents;
 
 namespace Lucene.FluentMapping.Conversion
 {
-    public static class DateTimeFieldMapping
-    {
-        public static IConfigurableFieldMap<NumericFieldOptions> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, DateTime>> property)
-        {
-            return @this.Add(new DateTimeFieldMap<T>(property));
-        }
-
-        public static IConfigurableFieldMap<NumericFieldOptions> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, DateTime?>> property)
-        {
-            return @this.Add(new DateTimeFieldMap<T>(property));
-        }
-    }
-
     public class DateTimeFieldMap<T> : NumericFieldMap<T, DateTime>
     {
         private readonly long _nullValue = DateTime.MinValue.Ticks;

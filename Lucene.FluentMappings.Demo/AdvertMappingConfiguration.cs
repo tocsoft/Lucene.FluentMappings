@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Lucene.FluentMapping.Configuration;
-using Lucene.FluentMapping.Conversion;
 using Lucene.Net.Documents;
 
 namespace Lucene.FluentMappings.Demo
