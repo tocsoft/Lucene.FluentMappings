@@ -26,7 +26,10 @@ namespace Lucene.FluentMappings.Demo
                     Id = 999,
                     Price = 400,
                     PrimaryImageUri = new Uri("http://www.example.com/foo"),
-                    Uri = new Uri("http://www.example.com/bar")
+                    Uri = new Uri("http://www.example.com/bar"),
+                    DiscountExpiry = DateTime.Today.AddDays(10),
+                    DiscountPercentage = 16.66M,
+                    Expiry = DateTime.Today.AddMonths(3)
                 };
         }
 

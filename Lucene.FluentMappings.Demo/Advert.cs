@@ -21,6 +21,11 @@ namespace Lucene.FluentMappings.Demo
         public Uri Uri { get; set; }
         public Uri PrimaryImageUri { get; set; }
 
+        public DateTime Expiry { get; set; }
+
+        public decimal? DiscountPercentage { get; set; }
+        public DateTime? DiscountExpiry { get; set; }
+
         public Advert(int categoryId, string categoryName)
         {
             CategoryId = categoryId;

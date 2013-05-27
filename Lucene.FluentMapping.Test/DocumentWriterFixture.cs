@@ -30,8 +30,10 @@ namespace Lucene.FluentMapping.Test
         {
             _writer.UpdateFrom(Example.Advert());
 
+            var propertyCount = typeof (Advert).GetProperties().Length;
+
             Assert.That(_writer.Document, Is.Not.Null
-                                    .And.Property("fields_ForNUnit").Count.EqualTo(12));
+                                    .And.Property("fields_ForNUnit").Count.EqualTo(propertyCount));
         }
     }
 }

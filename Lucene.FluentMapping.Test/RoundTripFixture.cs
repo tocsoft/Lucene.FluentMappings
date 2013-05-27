@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Lucene.FluentMapping.Configuration;
 using Lucene.FluentMapping.Conversion;
@@ -11,7 +12,16 @@ namespace Lucene.FluentMapping.Test
     {
         private DocumentReader<Advert> _reader;
         private DocumentWriter<Advert> _writer;
-        private Advert _advert;
+        
+        public IEnumerable<Advert> Adverts
+        {
+            get
+            {
+                yield return new Advert();          // all default values
+                yield return Example.Advert();      // all properties non-default
+                // TODO try some odd values for datetime, decimal etc
+            }
+        }
 
         [SetUp]
         public void SetUp()
@@ -19,19 +29,17 @@ namespace Lucene.FluentMapping.Test
             var mappings = MappingFactory.GetMappings<Advert>().ToList();
             _reader = new DocumentReader<Advert>(() => new Advert(), mappings);
             _writer = new DocumentWriter<Advert>(mappings);
-
-            _advert = Example.Advert();
         }
-
-
+        
         [Test]
-        public void CanRoundTripConvert()
+        [TestCaseSource("Adverts")]
+        public void CanRoundTripConvert(Advert advert)
         {
-            _writer.UpdateFrom(_advert);
+            _writer.UpdateFrom(advert);
 
             var roundTripped = _reader.Read(_writer.Document);
 
-            var differences = Compare.Properties(_advert, roundTripped);
+            var differences = Compare.Properties(advert, roundTripped);
 
             Assert.That(differences, Is.Empty);
         }

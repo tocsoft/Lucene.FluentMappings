@@ -13,7 +13,7 @@ namespace Lucene.FluentMapping.Test
             var secondProperties = properties.Select(p => PropertyAndValue.From(p, second));
 
             return firstProperties
-                .Zip(secondProperties, (p1, p2) => !p1.Value.Equals(p2.Value) ? new {p1,p2} : null)
+                .Zip(secondProperties, (p1, p2) => !Equals(p1.Value, p2.Value) ? new {p1,p2} : null)
                 .Where(x => x != null)
                 .Select(x => x.p1.Property.Name)
                 .ToList();

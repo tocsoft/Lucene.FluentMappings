@@ -62,18 +62,23 @@ namespace Lucene.FluentMapping.Conversion
         {
             var field = document.GetFieldable(_name);
 
-            return Convert(field as NumericField);
+            return ToLong(field as NumericField);
         }
 
-        private long? Convert(NumericField numericField)
+        private static long? ToLong(NumericField numericField)
         {
             if (numericField == null || numericField.NumericValue == null)
                 return null;
 
-            return Value((long) numericField.NumericValue);
+            return ToLong(numericField.NumericValue);
         }
 
-        private static long? Value(long numericValue)
+        private static long? ToLong(ValueType value)
+        {
+            return Nullable((long) value);
+        }
+
+        private static long? Nullable(long numericValue)
         {
             if (numericValue == NullValue)
                 return null;
