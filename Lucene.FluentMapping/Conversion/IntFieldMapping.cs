@@ -18,65 +18,31 @@ namespace Lucene.FluentMapping.Conversion
         }
     }
 
-    public class IntFieldMapping<T> : IFieldMap<T>
+    public class IntFieldMapping<T> : NumericFieldMapping<T, int>
     {
-        // TODO - don't store null value!!
+        private const int NullValue = int.MinValue;
 
-        private const int IntegerNullValue = int.MinValue;
+        public IntFieldMapping(Expression<Func<T, int>> property, bool index = false) 
+            : base(property, index)
+        { }
 
-        private readonly Func<T, int?> _getValue;
-        private readonly Action<T, int?> _setValue;
-        private readonly string _name;
-        private readonly bool _index;
+        public IntFieldMapping(Expression<Func<T, int?>> property, bool index = false) 
+            : base(property, index)
+        { }
 
-        public IntFieldMapping(Expression<Func<T, int>> property, bool index = false)
+        protected override int? Convert(ValueType value)
         {
-            _getValue = ReflectionHelper.GetGetter(property).Bind();
-            _setValue= ReflectionHelper.GetSetter(property).Bind();
-            _name = ReflectionHelper.GetPropertyName(property);
-            _index = index;
-        }
-        
-        public IntFieldMapping(Expression<Func<T, int?>> property, bool index = false)
-        {
-            _getValue = ReflectionHelper.GetGetter(property);
-            _setValue = ReflectionHelper.GetSetter(property);
-            _name = ReflectionHelper.GetPropertyName(property);
-            _index = index;
-        }
+            var integerValue = (int)value;
 
-        public IFieldWriter<T> CreateFieldWriter()
-        {
-            var field = new NumericField(_name, Field.Store.YES, _index);
-
-            return FieldWriter.For(field, _getValue, (f, i) => f.SetIntValue(i.HasValue ? i.Value : IntegerNullValue));
-        }
-
-        public Setter<T> ValueFrom(Document document)
-        {
-            var field = document.GetFieldable(_name);
-
-            var value = Convert(field as NumericField);
-
-            return new Setter<T>(x => _setValue(x, value));
-        }
-
-        private static int? Convert(NumericField field)
-        {
-            if (field == null || field.NumericValue == null)
+            if (integerValue == NullValue)
                 return null;
 
-            return Value((int) field.NumericValue);
+            return integerValue;
         }
 
-        private static int? Value(int numericValue)
+        protected override void SetValue(NumericField field, int? value)
         {
-            var value = numericValue;
-
-            if (value == IntegerNullValue)
-                return null;
-
-            return value;
+            field.SetIntValue(value.HasValue ? value.Value : NullValue);
         }
     }
 }
