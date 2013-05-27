@@ -27,25 +27,33 @@ namespace Lucene.FluentMapping
         {
             _specifiedMappingSource = assembly;
         }
-        
-        public static IList<TResult> ToList<TResult>(this IEnumerable<Document> documents, int? parallelism = null)
+
+        /// <summary>
+        /// Converts each <see cref="Document"/> to an instance of <typeparam name="TResult">TResult</typeparam>,
+        /// using the type's default constructor.
+        /// </summary>
+        public static IList<TResult> ToList<TResult>(this IEnumerable<Document> documents)
             where TResult : new()
         {
-            return ToList(documents, () => new TResult(), parallelism);
+            return ToList(documents, () => new TResult());
         }
 
-        public static IList<TResult> ToList<TResult>(this IEnumerable<Document> documents, Func<TResult> constructor, int? parallelism = null)
+        /// <summary>
+        /// Converts each <see cref="Document"/> to an instance of <typeparam name="TResult">TResult</typeparam>, 
+        /// using the supplied constructor delegate.
+        /// </summary>
+        public static IList<TResult> ToList<TResult>(this IEnumerable<Document> documents, Func<TResult> constructor)
         {
             var reader = GetDocumentReader(constructor);
-            
-            var converted = documents.Select(reader.Read);
-            
-            if (parallelism.HasValue)
-                converted = converted.AsParallel().WithDegreeOfParallelism(parallelism.Value);
 
-            return converted.ToList();
+            return documents
+                .Select(reader.Read)
+                .ToList();
         }
 
+        /// <summary>
+        /// Writes each instance to a document and calls the supplied delegate.
+        /// </summary>
         public static void ToDocuments<TMapped>(this IEnumerable<TMapped> instances, Action<Document> documentAction)
         {
             var writer = GetDocumentWriter<TMapped>();
@@ -58,6 +66,10 @@ namespace Lucene.FluentMapping
             }
         }
 
+        /// <summary>
+        /// Writes each instance to a document and calls the supplied delegate.
+        /// Uses multiple <see cref="DocumentWriter"/> instances in parallel.
+        /// </summary>
         public static void ToDocumentsParallelEx<TMapped>(this IEnumerable<TMapped> instances, Action<Document> documentAction)
         {
             Parallel.ForEach(instances, GetDocumentWriter<TMapped>, (instance, _, writer) =>
@@ -68,18 +80,29 @@ namespace Lucene.FluentMapping
                 }, _ => { });
         }
 
-        private static DocumentWriter<TMapped> GetDocumentWriter<TMapped>()
+        /// <summary>
+        /// Gets a <see cref="DocumentWriter"/> instance for the specified type.
+        /// </summary>
+        public static DocumentWriter<TMapped> GetDocumentWriter<TMapped>()
         {
-            var mappings = MappingFactory.GetMappings<TMapped>(_specifiedMappingSource);
+            var mappings = GetMappings<TMapped>();
 
             return new DocumentWriter<TMapped>(mappings);
         }
 
-        private static DocumentReader<TResult> GetDocumentReader<TResult>(Func<TResult> constructor)
+        /// <summary>
+        /// Gets a <see cref="DocumentReader"/> instance for the specified type.
+        /// </summary>
+        public static DocumentReader<TResult> GetDocumentReader<TResult>(Func<TResult> constructor)
         {
-            var mappings = MappingFactory.GetMappings<TResult>(_specifiedMappingSource);
+            var mappings = GetMappings<TResult>();
 
             return new DocumentReader<TResult>(constructor, mappings);
+        }
+
+        private static IEnumerable<IFieldMap<TMapped>> GetMappings<TMapped>()
+        {
+            return MappingFactory.GetMappings<TMapped>(_specifiedMappingSource);
         }
     }
 }
