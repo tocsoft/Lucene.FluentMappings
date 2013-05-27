@@ -1,0 +1,76 @@
+#OS junk files
+[Tt]humbs.db
+*.DS_Store
+
+#Visual Studio files
+*.[Oo]bj
+*.user
+*.aps
+*.pch
+*.vspscc
+*.vssscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.[Cc]ache
+*.ilk
+*.log
+*.lib
+*.sbr
+*.opensdf
+*.apk
+*.ap_
+*.dex
+*.class
+*.hash
+
+*.vsp
+*.psess
+
+
+ipch/
+obj/
+[Bb]in/**
+!wireframes/[Bb]in/**
+[Dd]ebug*/
+[Rr]elease*/
+Ankh.NoLoad
+
+#Tooling
+_ReSharper*/
+*.resharper
+[Tt]est[Rr]esult*
+
+#Project files
+.settings/
+
+#nuget
+packages/**
+
+#everything in all the app data folders
+**/App_Data/**
+!wireframes/App_Data/**
+
+#don't commit the computed webconfig file as its rebuild on every build.
+
+#Subversion files
+.svn
+
+# Office Temp Files
+~$*
+
+/.build/**/*
+/**/App_Data/*
+!/**/App_Data/access.config
+!/**/App_Data/packages/*
+#/**/media/*
+/**/bin/*
+
+/.build/**/*
+
+# log files
+log.txt*
