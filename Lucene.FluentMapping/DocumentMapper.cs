@@ -65,7 +65,7 @@ namespace Lucene.FluentMapping
         }
         
         /// <summary>
-        /// Gets a <see cref="DocumentWriter"/> instance for the specified type.
+        /// Gets a <see cref="DocumentWriter{TMapped}"/> instance for the specified type.
         /// </summary>
         public static DocumentWriter<TMapped> GetDocumentWriter<TMapped>()
         {
@@ -75,7 +75,7 @@ namespace Lucene.FluentMapping
         }
 
         /// <summary>
-        /// Gets a <see cref="DocumentReader"/> instance for the specified type.
+        /// Gets a <see cref="DocumentReader{TResult}"/> instance for the specified type.
         /// </summary>
         public static DocumentReader<TResult> GetDocumentReader<TResult>(Func<TResult> constructor)
         {
