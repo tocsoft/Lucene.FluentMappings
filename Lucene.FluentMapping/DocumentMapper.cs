@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Lucene.FluentMapping.Configuration;
 using Lucene.Net.Documents;
 
@@ -64,21 +63,7 @@ namespace Lucene.FluentMapping
                 documentAction(writer.Document);
             }
         }
-
-        /// <summary>
-        /// Writes each instance to a document and calls the supplied delegate.
-        /// Uses multiple <see cref="DocumentWriter"/> instances in parallel.
-        /// </summary>
-        public static void ToDocumentsParallelEx<TMapped>(this IEnumerable<TMapped> instances, Action<Document> documentAction)
-        {
-            Parallel.ForEach(instances, GetDocumentWriter<TMapped>, (instance, _, writer) =>
-                {
-                    writer.UpdateFrom(instance);
-                    documentAction(writer.Document);
-                    return writer;
-                }, _ => { });
-        }
-
+        
         /// <summary>
         /// Gets a <see cref="DocumentWriter"/> instance for the specified type.
         /// </summary>
