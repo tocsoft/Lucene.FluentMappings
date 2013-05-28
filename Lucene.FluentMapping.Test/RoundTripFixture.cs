@@ -34,9 +34,7 @@ namespace Lucene.FluentMapping.Test
         [TestCaseSource("Adverts")]
         public void CanRoundTripConvert(Advert advert)
         {
-            _writer.UpdateFrom(advert);
-
-            var roundTripped = _reader.Read(_writer.Document);
+            var roundTripped = _reader.Read(_writer.UpdateFrom(advert));
 
             var differences = Compare.Properties(advert, roundTripped);
 

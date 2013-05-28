@@ -57,11 +57,7 @@ namespace Lucene.FluentMapping
             var writer = GetDocumentWriter<TMapped>();
 
             foreach (var instance in instances)
-            {
-                writer.UpdateFrom(instance);
-
-                documentAction(writer.Document);
-            }
+                documentAction(writer.UpdateFrom(instance));
         }
         
         /// <summary>

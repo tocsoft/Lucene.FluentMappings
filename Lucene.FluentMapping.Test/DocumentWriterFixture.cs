@@ -19,19 +19,19 @@ namespace Lucene.FluentMapping.Test
         [Test]
         public void CanCovertToDocumentFromDefaultInstance()
         {
-            _writer.UpdateFrom(new Advert(0, null));
+            var document = _writer.UpdateFrom(new Advert(0, null));
 
-            Assert.That(_writer.Document, Is.Not.Null);
+            Assert.That(document, Is.Not.Null);
         }
 
         [Test]
         public void WhenConvertingFromInstance_DocumentHasFieldsForEachProperty()
         {
-            _writer.UpdateFrom(Example.Advert());
+            var document = _writer.UpdateFrom(Example.Advert());
 
             var propertyCount = typeof (Advert).GetProperties().Length;
 
-            Assert.That(_writer.Document, Is.Not.Null
+            Assert.That(document, Is.Not.Null
                                     .And.Property("fields_ForNUnit").Count.EqualTo(propertyCount));
         }
     }

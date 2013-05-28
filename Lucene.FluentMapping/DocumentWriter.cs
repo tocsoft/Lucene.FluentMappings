@@ -6,26 +6,31 @@ using Lucene.Net.Documents;
 
 namespace Lucene.FluentMapping
 {
+    /// <summary>
+    /// Thread-safe
+    /// </summary>
     public class DocumentWriter<T>
     {
         private readonly List<IFieldWriter<T>> _writers;
 
-        public Document Document { get; private set; }
+        private readonly Document _document;
 
         public DocumentWriter(IEnumerable<IFieldWriterFactory<T>> mappings, Document document = null)
         {
             _writers = mappings.Select(x => x.CreateFieldWriter()).ToList();
             
-            Document = document ?? new Document();
+            _document = document ?? new Document();
             
             foreach (var writer in _writers)
-                Document.Add(writer.Field);
+                _document.Add(writer.Field);
         }
 
-        public void UpdateFrom(T source)
+        public Document UpdateFrom(T source)
         {
             foreach (var writer in _writers)
                 writer.WriteValueFrom(source);
+
+            return _document;
         }
     }
 }

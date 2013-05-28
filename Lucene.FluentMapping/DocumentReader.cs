@@ -7,6 +7,9 @@ using Lucene.Net.Documents;
 
 namespace Lucene.FluentMapping
 {
+    /// <summary>
+    /// Not thread-safe
+    /// </summary>
     public class DocumentReader<T>
     {
         private readonly Func<T> _create;
@@ -17,7 +20,7 @@ namespace Lucene.FluentMapping
             _create = create;
             _readers = mappings.Select(x => x.CreateFieldReader()).ToList();
         }
-
+        
         public T Read(Document source)
         {
             var instance = _create();
