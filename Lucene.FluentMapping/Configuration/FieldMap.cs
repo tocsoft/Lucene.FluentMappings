@@ -12,7 +12,9 @@ namespace Lucene.FluentMapping.Configuration
             IFieldAccessor<Field, TProperty> fieldAccessor)
             where TProperty : class
         {
-            return new StringFieldMap<T, TProperty>(property, fieldAccessor);
+            var propertyInfo = ReflectionHelper.GetPropertyInfo(property);
+
+            return new StringFieldMap<T, TProperty>(propertyInfo, fieldAccessor);
         }
 
         public static NumericFieldMap<T, TProperty> For<T, TProperty>(
@@ -20,7 +22,9 @@ namespace Lucene.FluentMapping.Configuration
             IFieldAccessor<NumericField, TProperty?> fieldAccessor)
             where TProperty : struct
         {
-            return new NumericFieldMap<T, TProperty>(property, fieldAccessor);
+            var propertyInfo = ReflectionHelper.GetPropertyInfo(property);
+
+            return new NumericFieldMap<T, TProperty>(propertyInfo, fieldAccessor);
         }
 
         public static NumericFieldMap<T, TProperty> For<T, TProperty>(
@@ -28,7 +32,9 @@ namespace Lucene.FluentMapping.Configuration
             IFieldAccessor<NumericField, TProperty?> fieldAccessor)
             where TProperty : struct
         {
-            return new NumericFieldMap<T, TProperty>(property, fieldAccessor);
+            var propertyInfo = ReflectionHelper.GetPropertyInfo(property);
+
+            return new NumericFieldMap<T, TProperty>(propertyInfo, fieldAccessor);
         }
     }
 }

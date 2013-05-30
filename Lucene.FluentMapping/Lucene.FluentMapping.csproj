@@ -48,12 +48,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\AppDomainExtensions.cs" />
+    <Compile Include="Configuration\AssemblyTypeResolutionExtensions.cs" />
     <Compile Include="Configuration\Mappings.cs" />
     <Compile Include="Configuration\ConfigurableFieldMapExtensions.cs" />
     <Compile Include="Configuration\NumericFieldMap.cs" />
     <Compile Include="Conversion\DateTimeFieldAccessor.cs" />
-    <Compile Include="Configuration\DateTimeFieldMappingBuilderExtensions.cs" />
     <Compile Include="Conversion\DecimalFieldAccessor.cs" />
     <Compile Include="Conversion\FieldReader.cs" />
     <Compile Include="Conversion\FieldWriter.cs" />

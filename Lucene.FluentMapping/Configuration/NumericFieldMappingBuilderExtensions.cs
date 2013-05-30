@@ -35,5 +35,15 @@ namespace Lucene.FluentMapping.Configuration
         {
             return @this.Map(FieldMap.For(property, new DecimalFieldAccessor()));
         }
+
+        public static IConfigurableFieldMap<NumericFieldOptions> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, DateTime>> property)
+        {
+            return @this.Map(FieldMap.For(property, new DateTimeFieldAccessor()));
+        }
+
+        public static IConfigurableFieldMap<NumericFieldOptions> Map<T>(this MappingBuilder<T> @this, Expression<Func<T, DateTime?>> property)
+        {
+            return @this.Map(FieldMap.For(property, new DateTimeFieldAccessor()));
+        }
     }
 }

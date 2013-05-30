@@ -6,31 +6,7 @@ namespace Lucene.FluentMapping.Configuration
 {
     public static class ReflectionHelper
     {
-        public static string GetPropertyName<T, TProperty>(Expression<Func<T, TProperty>> expression)
-        {
-            var property = GetPropertyInfo(expression);
-
-            if (property == null)
-                throw new ArgumentException("Expression {0} is not a property accessor");
-
-            return property.Name;
-        }
-       
-        public static Func<T, TProperty> GetGetter<T, TProperty>(Expression<Func<T, TProperty>> expression)
-        {
-            var property = GetPropertyInfo(expression);
-
-            return GetGetter<T, TProperty>(property);
-        }
-
-        public static Action<T, TProperty> GetSetter<T, TProperty>(Expression<Func<T, TProperty>> expression)
-        {
-            var property = GetPropertyInfo(expression);
-
-            return GetSetter<T, TProperty>(property);
-        }
-
-        private static PropertyInfo GetPropertyInfo<T, TProperty>(Expression<Func<T, TProperty>> expression)
+        public static PropertyInfo GetPropertyInfo<T, TProperty>(Expression<Func<T, TProperty>> expression)
         {
             var memberExpression = expression.Body as MemberExpression;
 
@@ -40,7 +16,7 @@ namespace Lucene.FluentMapping.Configuration
             return memberExpression.Member as PropertyInfo;
         }
         
-        private static Func<T, TProperty> GetGetter<T, TProperty>(PropertyInfo propertyInfo)
+        public static Func<T, TProperty> GetGetter<T, TProperty>(this PropertyInfo propertyInfo)
         {
             Validate<T, TProperty>(propertyInfo);
 
@@ -51,7 +27,7 @@ namespace Lucene.FluentMapping.Configuration
             return (Func<T, TProperty>)func;
         }
 
-        private static Action<T, TProperty> GetSetter<T, TProperty>(this PropertyInfo propertyInfo)
+        public static Action<T, TProperty> GetSetter<T, TProperty>(this PropertyInfo propertyInfo)
         {
             Validate<T, TProperty>(propertyInfo);
 

@@ -82,7 +82,7 @@ namespace Lucene.FluentMapping
 
         private static IEnumerable<IFieldMap<TMapped>> GetMappings<TMapped>()
         {
-            return MappingFactory.GetMappings<TMapped>(_specifiedMappingSource);
+            return MappingFactory<TMapped>.GetMappings(_specifiedMappingSource);
         }
     }
 }

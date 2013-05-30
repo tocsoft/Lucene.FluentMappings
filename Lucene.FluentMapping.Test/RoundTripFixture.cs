@@ -25,7 +25,7 @@ namespace Lucene.FluentMapping.Test
         [SetUp]
         public void SetUp()
         {
-            var mappings = MappingFactory.GetMappings<Advert>().ToList();
+            var mappings = MappingFactory<Advert>.GetMappings().ToList();
             _reader = new DocumentReader<Advert>(() => new Advert(), mappings);
             _writer = new DocumentWriter<Advert>(mappings);
         }
