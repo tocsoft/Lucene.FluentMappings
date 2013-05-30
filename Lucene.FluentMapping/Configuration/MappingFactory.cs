@@ -1,62 +1,65 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
 namespace Lucene.FluentMapping.Configuration
 {
-    public static class MappingFactory
+    internal static class MappingFactory<T>
     {
-        private static readonly ConcurrentDictionary<Type, object> _mappings = new ConcurrentDictionary<Type, object>();
+        private static IEnumerable<IFieldMap<T>> _mappings;
 
-        public static IEnumerable<IFieldMap<T>> GetMappings<T>(Assembly sourceAssembly = null)
+        public static IEnumerable<IFieldMap<T>> GetMappings(Assembly sourceAssembly = null)
         {
-            return GetMappings<T>(new[] {sourceAssembly ?? typeof (T).Assembly});
+            return GetMappings(new[] { sourceAssembly ?? typeof(T).Assembly });
         }
 
-        public static IEnumerable<IFieldMap<T>> GetMappings<T>(Assembly[] sourceAssemblies)
+        public static IEnumerable<IFieldMap<T>> GetMappings(Assembly[] sourceAssemblies)
         {
-            return (IEnumerable<IFieldMap<T>>) _mappings.GetOrAdd(typeof (T), _ => BuildMappings<T>( sourceAssemblies));
+            if (_mappings != null)
+                return _mappings;
+            
+            _mappings = BuildMappings(sourceAssemblies);
+
+            return _mappings;
         }
 
-        private static object BuildMappings<T>(Assembly[] sourceAssemblies)
+        private static IEnumerable<IFieldMap<T>> BuildMappings(Assembly[] sourceAssemblies)
         {
-            var mappingConfiguration = BuildMappingConfiguration<T>(sourceAssemblies);
+            var mappingConfiguration = BuildMappingConfiguration(sourceAssemblies);
 
             return mappingConfiguration.BuildMappings();
         }
 
-        private static IMappingConfiguration<T> BuildMappingConfiguration<T>(Assembly[] sourceAssemblies)
+        private static IMappingConfiguration<T> BuildMappingConfiguration(Assembly[] sourceAssemblies)
         {
-            var configurationType = FindMappingConfigurationType(typeof(T), sourceAssemblies);
+            var configurationType = FindMappingConfigurationType(sourceAssemblies);
 
             return Activator.CreateInstance(configurationType) as IMappingConfiguration<T>;
         }
 
-        private static Type FindMappingConfigurationType(Type mappedType, Assembly[] sourceAssemblies)
+        private static Type FindMappingConfigurationType(Assembly[] sourceAssemblies)
         {
-            var interfaceType = typeof (IMappingConfiguration<>).MakeGenericType(mappedType);
-
-            var implementerType = FindImplementer(interfaceType, sourceAssemblies);
+            var implementerType = FindImplementer(sourceAssemblies);
 
             if (implementerType == null)
-                throw NotFound(interfaceType, sourceAssemblies);
+                throw NotFound(sourceAssemblies);
 
             return implementerType;
         }
 
-        private static Type FindImplementer(Type interfaceType, Assembly[] sourceAssemblies)
+        private static Type FindImplementer(IEnumerable<Assembly> sourceAssemblies)
         {
             return sourceAssemblies
-                .GetTypesImplementing(interfaceType)
+                .GetTypesImplementing(typeof(IMappingConfiguration<T>))
                 .FirstOrDefault();
         }
 
-        private static ArgumentException NotFound(Type interfaceType, IEnumerable<Assembly> scannedAssemblies)
+        private static ArgumentException NotFound(IEnumerable<Assembly> scannedAssemblies)
         {
-            var interfaceName = string.Concat(interfaceType.Name.Remove(interfaceType.Name.Length - 2), "<",
-                                              interfaceType.GetGenericArguments().First().Name, ">");
+            var name = typeof (IMappingConfiguration<T>).Name;
+
+            var interfaceName = string.Concat(name.Remove(name.Length - 2), "<", typeof(T).Name, ">");
 
             var locations = string.Join(Environment.NewLine, scannedAssemblies.Select(x => x.FullName));
 

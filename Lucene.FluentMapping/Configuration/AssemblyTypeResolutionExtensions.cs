@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Lucene.FluentMapping.Configuration
 {
-    public static class AppDomainExtensions
+    public static class AssemblyTypeResolutionExtensions
     {
         public static IEnumerable<Type> GetTypesImplementing(this IEnumerable<Assembly> @this, Type interfaceType)
         {

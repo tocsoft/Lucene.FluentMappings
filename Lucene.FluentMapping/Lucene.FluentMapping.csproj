@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\AppDomainExtensions.cs" />
+    <Compile Include="Configuration\AssemblyTypeResolutionExtensions.cs" />
     <Compile Include="Configuration\Mappings.cs" />
     <Compile Include="Configuration\ConfigurableFieldMapExtensions.cs" />
     <Compile Include="Configuration\NumericFieldMap.cs" />

@@ -12,7 +12,7 @@ namespace Lucene.FluentMapping.Test
         [SetUp]
         public void SetUp()
         {
-            var mappings = MappingFactory.GetMappings<Advert>();
+            var mappings = MappingFactory<Advert>.GetMappings();
             _writer = new DocumentWriter<Advert>(mappings);
         }
 
